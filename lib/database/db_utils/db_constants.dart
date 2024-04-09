@@ -5,6 +5,8 @@
 // ignore_for_file: constant_identifier_names
 
 
+import 'package:nb_posx/core/service/make_close_shift/model/make_close_shift.dart';
+
 const CUSTOMER_BOX = 'customers';
 const HUB_MANAGER_BOX = 'hub_manager';
 const PRODUCT_BOX = 'products';
@@ -24,9 +26,12 @@ const SALES_ORDER_REQUEST_ITEMS_BOX = 'salesordererequestitems';
 const SALES_ORDER_REQUEST_BOX = 'salesordererequest';
 const POS_PROFILE_CASHIER = 'pos_profile_cashier_box';
 const PAYMENT_METHOD_BOX = 'payment_method_box';
+const PAYMENT_INFO_BOX = 'payment_info_box';
+const PAYMENT_RECONCILIATION_BOX = 'payment_reconcile_box';
 const SHIFT_MANAGEMENT_BOX = 'shift_management_box';
 const CREATE_SHIFT_BOX = 'create_shift_box';
 const BALANCE_DETAILS_BOX = 'balance_detail_box';
+
 
 //Temporary Variables
 const WardOne = 'SHM0134';
@@ -54,6 +59,9 @@ const PaymentTypeBoxId = 26;
 const ShiftManagementBoxId = 27;
 const CreateShiftManagementBoxId = 28;
 const BalanceDetailsBoxId = 29;
+const PaymentInfoBoxId = 30;
+const PaymentReconciliationBoxId = 31;
+
 
 //PreferenceBox Constants
 const SelectedWard = 'SELECTED_WARDS';
@@ -86,3 +94,12 @@ const ACTIVE = 'ACTIVE';
 //SSL Prefix
 const SSL_PREFIX = "SSL_PREFIX";
 const IP_ADDRESS = "IP_ADDRESS";
+
+//Instance Url
+const INSTANCE_URL = "INSTANCE_URL";
+
+//Static id
+const SHIFT_ID = "SHIFT_ID";
+const CREATE_SHIFT_ID = "CREATE_SHIFT_ID";
+const SELECTED_POS_PROFILE_ID = "SELECTED_POS_PROFILE_ID";
+const PAYMENT_ID = 'PAYMENT_ID';

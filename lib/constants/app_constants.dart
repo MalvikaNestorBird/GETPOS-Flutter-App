@@ -180,6 +180,10 @@ const PASSWORD_UPDATED_TITLE = 'Password Updated!';
 const PASSWORD_UPDATED_MSG = 'Password Has Been Updated Successfully';
 const PASSWORD_UPDATED_BTN_TXT = 'Back To Home';
 
+//CLOSE SHIFT SCREEN
+const OPEN_THE_SHIFT = 'Please Open the Shift first';
+
+
 //SPLASH SCREEN
 const POWERED_BY_TXT = 'Powered by NestorBird';
 

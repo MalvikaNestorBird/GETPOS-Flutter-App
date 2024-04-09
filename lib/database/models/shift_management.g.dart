@@ -17,22 +17,44 @@ class ShiftManagementAdapter extends TypeAdapter<ShiftManagement> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ShiftManagement(
-      posProfile: fields[0] as String,
-      paymentsMethod: (fields[1] as List).cast<PaymentType>(),
-      paymentInfoList: (fields[2] as List).cast<PaymentInfo>(),
+      periodStartDate: fields[0] as DateTime?,
+      periodEndDate: fields[1] as DateTime?,
+      postingDate: fields[2] as DateTime?,
+      posOpeningShift: fields[3] as String?,
+      company: fields[4] as String?,
+      posProfile: fields[5] as String?,
+      doctype: fields[6] as String?,
+      paymentsMethod: (fields[7] as List?)?.cast<PaymentType>(),
+      paymentInfoList: (fields[8] as List?)?.cast<PaymentInfo>(),
+      paymentReconciliation:
+          (fields[9] as List?)?.cast<PaymentReconciliation>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ShiftManagement obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(10)
       ..writeByte(0)
-      ..write(obj.posProfile)
+      ..write(obj.periodStartDate)
       ..writeByte(1)
-      ..write(obj.paymentsMethod)
+      ..write(obj.periodEndDate)
       ..writeByte(2)
-      ..write(obj.paymentInfoList);
+      ..write(obj.postingDate)
+      ..writeByte(3)
+      ..write(obj.posOpeningShift)
+      ..writeByte(4)
+      ..write(obj.company)
+      ..writeByte(5)
+      ..write(obj.posProfile)
+      ..writeByte(6)
+      ..write(obj.doctype)
+      ..writeByte(7)
+      ..write(obj.paymentsMethod)
+      ..writeByte(8)
+      ..write(obj.paymentInfoList)
+      ..writeByte(9)
+      ..write(obj.paymentReconciliation);
   }
 
   @override

@@ -87,16 +87,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         child: Stack(alignment: Alignment.topCenter, children: [
                           IconButton(
                             onPressed: (() {
-                              if (widget.order != null) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            CartScreen(order: widget.order)));
-                              } else {
-                                Helper.showPopup(context, "Your cart is empty");
-                              }
-                            }),
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CartScreen(order: widget.order)));
+                                                        }),
                             icon: SvgPicture.asset(
                               CART_ICON,
                               height: 25,

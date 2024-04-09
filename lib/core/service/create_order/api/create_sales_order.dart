@@ -4,6 +4,9 @@ import 'dart:developer';
 import 'package:intl/intl.dart';
 import 'package:nb_posx/core/service/create_order/model/selected_options.dart'
     as request_sales;
+import 'package:nb_posx/database/db_utils/db_constants.dart';
+import 'package:nb_posx/database/db_utils/db_create_opening_shift.dart';
+import 'package:nb_posx/database/db_utils/db_preferences.dart';
 import 'package:nb_posx/database/models/sales_order_req.dart';
 
 //import 'package:nb_posx/database/models/sales_order_req_items.dart';
@@ -58,7 +61,17 @@ class CreateOrderService {
           DateFormat('yyyy-MM-dd HH:mm:ss').format(order.tracsactionDateTime);
       log('Formatted Transaction Date Time :: $transactionDateTime');
 
+      //fetch pos cashier id
+      var posProfileId = await DbCreateShift().getOpeningShiftData();
+      log("POS Profile Id: $posProfileId");
+
+      //fetch pos profile
+      var selectedPosProfile = await DBPreferences().getPreference(SELECTED_POS_PROFILE_ID);
+
+      //SALES ORDER REQUEST BODY 
       SalesOrderRequest orderRequest = SalesOrderRequest(
+        name: selectedPosProfile,
+        posOpeningShift: posProfileId!.name,
         hubManager: order.manager.emailId,
         // ward: "order.customer.ward.id",
         customer: order.customer.id,

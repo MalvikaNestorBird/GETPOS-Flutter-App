@@ -3,7 +3,9 @@ import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
 import 'package:nb_posx/core/mobile/transaction_history/model/transaction.dart';
+import 'package:nb_posx/database/db_utils/db_create_opening_shift.dart';
 import 'package:nb_posx/database/db_utils/db_order_tax.dart';
+import 'package:nb_posx/database/db_utils/db_pos_profile_cashier.dart';
 import '../../../../../constants/app_constants.dart';
 import '../model/sale_order_list_response.dart';
 import '../../../../../database/db_utils/db_constants.dart';
@@ -111,8 +113,17 @@ class GetPreviousOrder {
       log('Order No : $orderId');
  var tax = await DbOrderTax().getOrderWiseTax(orderId!);
       log("OrderWise Taxes :: $tax");
+
+     //fetch pos cashier id
+var posProfileId = await DbCreateShift().getOpeningShiftData();
+
+     //FETCH SELECTED POS PROFILE
+     var selectedPosProfile = await DBPreferences().getPreference(SELECTED_POS_PROFILE_ID);
+
           //Creating a SaleOrder
           SaleOrder saleOrder = SaleOrder(
+            name: selectedPosProfile,
+            posOpeningShift: posProfileId!.name,
               id: order.name!,
               date: date,
               time: time,

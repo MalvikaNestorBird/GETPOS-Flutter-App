@@ -18,7 +18,7 @@ class DbCreateShift{
     var box = await Hive.openBox<CreateOpeningShiftDb>(CREATE_SHIFT_BOX);
 
     // Save the shift management data
-    await box.put('shift', createShift);
+    await box.put(CREATE_SHIFT_ID, createShift);
 
     // Close the Hive box
     await box.close();
@@ -32,8 +32,14 @@ Future<int> deleteShift() async {
 ///FETCH THE DATA OF POS PROFILE 
 Future<CreateOpeningShiftDb?> getOpeningShiftData() async {
   var box = await Hive.openBox<CreateOpeningShiftDb>(CREATE_SHIFT_BOX);
-  var shiftData = box.get('shift');
-  return shiftData;
+  var shiftData = box.get(CREATE_SHIFT_ID);
+  log("Shift Db : $shiftData");
+
+  if (shiftData != null) {
+    return shiftData;
+  } else {
+    return null; // Return null if shiftData is null
+  }
 }
 }
 

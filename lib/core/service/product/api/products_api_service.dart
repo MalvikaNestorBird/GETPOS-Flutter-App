@@ -155,7 +155,7 @@ class ProductsService {
           apiStatus: ApiStatus.NO_INTERNET);
     }
   }
-
+//NOT BEING USED
   Future<CommanResponse> getProducts() async {
     if (await Helper.isNetworkAvailable()) {
       //Fetching hub manager id/email from DbPreferences

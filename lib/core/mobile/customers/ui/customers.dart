@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nb_posx/core/service/customer/api/customer_api_service.dart';
-import 'package:nb_posx/network/api_helper/comman_response.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../../../database/db_utils/db_customer.dart';
 import '../../../../../database/models/customer.dart';
@@ -168,10 +166,10 @@ class _CustomersState extends State<Customers> {
 
   
 
-    if (!isCustomersFound) {
-      CommanResponse response =
-          await CustomerService().getCustomers(searchTxt: searchText);
-    }
+    // if (!isCustomersFound) {
+    //   CommanResponse response =
+    //       await CustomerService().getCustomers(searchTxt: searchText);
+    // }
   isCustomersFound = customers.isNotEmpty;
     setState(() {});
   }

@@ -11,7 +11,6 @@ import 'package:nb_posx/core/mobile/create_order_new/ui/cart_screen.dart';
 import 'package:nb_posx/core/mobile/finance/ui/finance.dart';
 import 'package:nb_posx/core/mobile/my_account/ui/my_account.dart';
 import 'package:nb_posx/core/service/customer/api/customer_api_service.dart';
-import 'package:nb_posx/core/service/login/api/verify_instance_service.dart';
 import 'package:nb_posx/widgets/search_widget.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -24,7 +23,6 @@ import '../../../../database/models/hub_manager.dart';
 import '../../../../database/models/order_item.dart';
 import '../../../../database/models/park_order.dart';
 import '../../../../database/models/product.dart';
-import '../../../../network/api_helper/comman_response.dart';
 import '../../../../utils/helper.dart';
 import '../../../../utils/ui_utils/padding_margin.dart';
 import '../../../../utils/ui_utils/spacer_widget.dart';
@@ -120,6 +118,7 @@ class _ProductListHomeState extends State<ProductListHome> {
       });
     } catch (error) {
       // Handle the error if needed
+      // ignore: avoid_print
       print('Error: $error');
     }
   }

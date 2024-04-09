@@ -6,10 +6,6 @@ import 'package:get/get.dart';
 import 'package:nb_posx/configs/theme_dynamic_colors.dart';
 import 'package:nb_posx/core/service/customer/api/customer_api_service.dart';
 import 'package:nb_posx/core/service/product/api/products_api_service.dart';
-import 'package:nb_posx/core/tablet/home_tablet.dart';
-import 'package:nb_posx/core/tablet/open_shift/open_shift_management_landscape.dart';
-import 'package:nb_posx/core/tablet/widget/left_side_menu.dart';
-import 'package:nb_posx/core/tablet/widget/left_side_menu_old.dart';
 import 'package:nb_posx/database/models/park_order.dart';
 import 'package:nb_posx/database/models/shift_management.dart';
 import 'package:nb_posx/utils/helper.dart';
@@ -24,9 +20,7 @@ import '../../../../../utils/ui_utils/padding_margin.dart';
 import '../../../../../utils/ui_utils/spacer_widget.dart';
 import '../../../../../utils/ui_utils/text_styles/custom_text_style.dart';
 import '../../../database/models/order_item.dart';
-import '../../../network/api_helper/comman_response.dart';
 import '../../../widgets/item_options.dart';
-import '../../service/login/api/verify_instance_service.dart';
 import '../widget/create_customer_popup.dart';
 import '../widget/select_customer_popup.dart';
 import '../widget/title_search_bar.dart';
@@ -37,6 +31,7 @@ import 'cart_widget.dart';
 typedef OnCheckChangedCallback = void Function(bool isChecked);
 
 class CreateOrderLandscape extends StatefulWidget {
+ 
   ParkOrder? order;
   bool isShiftCreated;
   final RxString selectedView;
@@ -71,7 +66,7 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
   late List<OrderItem> items;
   late ScrollController _scrollController;
   RxString selectedView = RxString("");
-
+  String? selectedPosProfile;
   @override
   void initState() {
     _scrollController = ScrollController();
@@ -225,19 +220,20 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
         Padding(
           padding: leftSpace(x: 5),
           child: CartWidget(
+            posProfile: selectedPosProfile,
             // order: parkOrder!,
             itemsNotifier: itemsNotifier,
             customer: customer,
             orderList: items,
             taxes: const [],
             onHome: () {
-              widget.selectedView!.value = "Home";
+              widget.selectedView.value = "Home";
               items.clear();
               customer = null;
               setState(() {});
             },
             onPrintReceipt: () {
-              widget.selectedView!.value = "Home";
+              widget.selectedView.value = "Home";
               items.clear();
               customer = null;
               setState(() {});
@@ -692,6 +688,7 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
       });
     } catch (error) {
       // Handle the error if needed
+      // ignore: avoid_print
       print('Error: $error');
     }
   }

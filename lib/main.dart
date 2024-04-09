@@ -15,9 +15,12 @@ import 'package:nb_posx/core/tablet/theme_setting/theme_landscape.dart';
 import 'package:nb_posx/database/db_utils/db_constants.dart';
 import 'package:nb_posx/database/db_utils/db_instance_url.dart';
 import 'package:nb_posx/database/db_utils/db_preferences.dart';
+import 'package:nb_posx/database/models/balance_details.dart';
+import 'package:nb_posx/database/models/create_opening_shift.dart';
 import 'package:nb_posx/database/models/order_tax_template.dart';
 import 'package:nb_posx/database/models/orderwise_tax.dart';
 import 'package:nb_posx/database/models/payment_info.dart';
+import 'package:nb_posx/database/models/payment_reconciliation.dart';
 import 'package:nb_posx/database/models/sales_order_req.dart';
 import 'package:nb_posx/database/models/sales_order_req_items.dart';
 import 'package:nb_posx/database/models/taxes.dart';
@@ -142,6 +145,16 @@ void registerHiveTypeAdapters() {
 
   ///Registering PAYMENT INFO adapter
    Hive.registerAdapter(PaymentInfoAdapter());
+
+   ///Registering CREATE OPENING SHIFT adapter
+   Hive.registerAdapter(CreateOpeningShiftDbAdapter());
+   
+
+  //////Registering BALANCE DETAIL adapter
+   Hive.registerAdapter(BalanceDetailAdapter());
+
+   ///Registering Payment Reconciliation adapter
+   Hive.registerAdapter(PaymentReconciliationAdapter());
 }
 
 class MobileApp extends StatelessWidget {

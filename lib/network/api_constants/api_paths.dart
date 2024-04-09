@@ -81,5 +81,12 @@ const GET_ALL_PROMO_CODES_PATH = '';
 //OPENING SHIFT MANAGEMENT API PATH
 const GET_OPENING_DATA_PATH =
     'method/getpos.custom_api.pos_api.get_opening_data';
-//CREATE OPENUNG SHIFT API PATH
+//CREATE OPENING SHIFT API PATH
 const CREATE_OPENING_SHIFT = 'method/getpos.custom_api.pos_api.create_opening_voucher';
+
+//MAKE CLOSING SHIFT API PATH
+const MAKE_CLOSING_SHIFT = 'method/getpos.getpos.doctype.pos_closing_shift.pos_closing_shift.make_closing_shift_from_opening';
+
+//SUBMIT CLOSING API PATH 
+const SUBMIT_CLOSING_SHIFT = 'method/getpos.getpos.doctype.pos_closing_shift.pos_closing_shift.submit_closing_shift';
+

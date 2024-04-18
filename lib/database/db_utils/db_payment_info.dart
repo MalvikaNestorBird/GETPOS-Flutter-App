@@ -16,4 +16,10 @@ Future<List<PaymentInfo>> getBalanceDetail() async {
   final box = await Hive.openBox<PaymentInfo>(PAYMENT_INFO_BOX);
   return box.values.toList();
 }
+
+Future<void> delete() async {
+    box = await Hive.openBox<PaymentInfo>(PAYMENT_INFO_BOX);
+    await box.clear();
+    await box.close();
+  }
 }

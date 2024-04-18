@@ -42,33 +42,34 @@ class CloseShiftManagement extends StatefulWidget {
 class CloseShiftManagementState extends State<CloseShiftManagement> {
   bool isShiftOpen = false;
 //late List<TextEditingController> controllers;
-Map<String, TextEditingController> controllersMap = {};
+  Map<String, TextEditingController> controllersMap = {};
   ShiftManagement? closeShiftManagement;
   List<PaymentReconciliation>? paymentReconciliationList;
   late Future<ShiftManagement?> _future;
-   Future<ShiftManagement>? shiftManagementFuture;
+  Future<ShiftManagement>? shiftManagementFuture;
   ShiftManagement? submitPaymentDetails;
   List<PaymentType> paymentMethods = [];
   PaymentReconciliation? paymentDetail;
-   String selectedPosProfile = "";
-   List<ShiftManagement>? shiftManagementList ;
-  
+  String selectedPosProfile = "";
+  List<ShiftManagement>? shiftManagementList;
+  bool isEmptyController = false;
 
   @override
-void initState() {
- // Call fetchClosingShift in initState
-  super.initState();
- // controllers = [];
- controllersMap = {};
+  void initState() {
+    // Call fetchClosingShift in initState
+    super.initState();
+    // controllers = [];
+    controllersMap = {};
     _future = fetchClosingShift();
-  //loadPaymentMethods();
-}
+    //loadPaymentMethods();
+  }
+
   @override
   void dispose() {
     // for (var controller in controllers) {
     //   controller.dispose(); // Dispose all text editing controllers
     // }
-     super.dispose();
+    super.dispose();
   }
 
   @override
@@ -112,24 +113,23 @@ void initState() {
         ),
       );
 
-
   //FETCH THE DATA FROM OPENING SHIFT
-Widget fetchOpeningShiftData(shiftManagementFuture) =>
-  FutureBuilder<ShiftManagement?>(
-    future: _future,
- builder: (context, snapshot) {
-   // builder:  (BuildContext context, AsyncSnapshot<ShiftManagement?> snapshot){
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const CircularProgressIndicator();
-      } else if (snapshot.hasError || snapshot.data == null) {
-        return const Text('No data available');
-      } else {
-        var shiftManagement = snapshot.data!;
-      //  snapshot.data?.paymentReconciliation.forEach((element)){controllers.add(TextEditingController())};
-        return paymentMethodsWidget(shiftManagement);
-      }
-    },
-  );
+  Widget fetchOpeningShiftData(shiftManagementFuture) =>
+      FutureBuilder<ShiftManagement?>(
+        future: _future,
+        builder: (context, snapshot) {
+          // builder:  (BuildContext context, AsyncSnapshot<ShiftManagement?> snapshot){
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError || snapshot.data == null) {
+            return const Text('No data available');
+          } else {
+            var shiftManagement = snapshot.data!;
+            //  snapshot.data?.paymentReconciliation.forEach((element)){controllers.add(TextEditingController())};
+            return paymentMethodsWidget(shiftManagement);
+          }
+        },
+      );
 
 // Payment methods widget
   Widget paymentMethodsWidget(ShiftManagement shiftManagement) {
@@ -138,32 +138,31 @@ Widget fetchOpeningShiftData(shiftManagementFuture) =>
     if (shiftManagement.paymentReconciliation == null ||
         shiftManagement.paymentReconciliation!.isEmpty) {
       return const Text('No payment methods available');
-    
     }
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: shiftManagement.paymentReconciliation!.length,
       itemBuilder: (context, index) {
-
         final paymentReconciliation =
             shiftManagement.paymentReconciliation![index];
-            // Get mode of payment
-      final modeOfPayment = paymentReconciliation.modeOfPayment;
+        // Get mode of payment
+        final modeOfPayment = paymentReconciliation.modeOfPayment;
 
-      // Initialize or get existing controller for this mode of payment
-      TextEditingController controller = controllersMap.containsKey(modeOfPayment)
-          ? controllersMap[modeOfPayment]!
-          : TextEditingController();
+        // Initialize or get existing controller for this mode of payment
+        TextEditingController controller =
+            controllersMap.containsKey(modeOfPayment)
+                ? controllersMap[modeOfPayment]!
+                : TextEditingController();
 
-      // Store the controller in the map
-      controllersMap[modeOfPayment] = controller;
-      
-     // Initialize new TextEditingController for each item
-     //List< TextEditingController> controllers = [];
+        // Store the controller in the map
+        controllersMap[modeOfPayment] = controller;
 
-      // Add the controller to the list
-    //  controllers.add(TextEditingController());
+        // Initialize new TextEditingController for each item
+        //List< TextEditingController> controllers = [];
+
+        // Add the controller to the list
+        //  controllers.add(TextEditingController());
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +178,7 @@ Widget fetchOpeningShiftData(shiftManagementFuture) =>
                 padding: leftSpace(x: 10),
                 child: Center(
                   child: TextFormField(
-                 controller: controller,
+                    controller: controller,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintStyle: TextStyle(
@@ -203,134 +202,74 @@ Widget fetchOpeningShiftData(shiftManagementFuture) =>
                 fontWeight: FontWeight.w500,
               ),
             ),
-            hightSpacer30, 
+            hightSpacer30,
           ],
         );
-      }, 
+      },
     );
-    }
-
-
-
-// Fetch Payment Methods from DB for the selected POS Profile
-  // void loadPaymentMethods() {
-  //   DbShiftManagement().getShiftManagement().then((methods) {
-  //     setState(() {
-  //       shiftManagementList = methods as List<ShiftManagement>;
-  //       controllers = List.generate(
-  //           shiftManagementList![9].paymentReconciliation!.length, (index) => TextEditingController());
-  //     });
-  //   });
-  // }
-
-
-// Future<List<ShiftManagement>> loadPaymentMethods() async {
-//   ShiftManagement? shiftManagementObject = await DbShiftManagement().getShiftManagement();
-//   // Check if shiftManagementObject is not null
-//   if (shiftManagementObject != null) {
-//     shiftManagementList = [shiftManagementObject];
-//     controllers = List.generate(
-//       shiftManagementList![9].paymentReconciliation!.length, 
-//       (index) => TextEditingController()
-//     );
-//   } else {
-//     print('Error: Shift management object is null');
-//   }
-//   return shiftManagementList!.toList() ?? [];
-// }
-
+  }
 
 //Button for Close Shift and clear the DB after closing the shift
 
-Widget closeShiftBtnWidget ( Future<ShiftManagement?> shiftManagementFuture) => ButtonWidget(
-      colorTxt: AppColors.fontWhiteColor,
-      isMarginRequired: false,
-      width: 600,
-      onPressed: () async {
-        // ShiftManagement? submitPaymentDetails =
-        //     await DbShiftManagement().getShiftManagement();
-
-       // if(paymentReconciliationList!.isNotEmpty){
-          // List<double> amounts = [];
-          // for (var text
-          //     in controllers.map((controller) => controller.text)) {
-          //   try {
-          //     double amount = double.parse(text);
-          //     amounts.add(amount);
-          //   } catch (e) {
-          //     // Handle the error, such as logging it or skipping the invalid entry.
-          //     print("Error parsing amount: $e");
-          //   }
-          // }
-
-          // // Create a list of PaymentInfo objects
-          // List<PaymentReconciliation> paymentReconciliationList = [];
-          // for (int i = 0; i < paymentMethods.length; i++) {
-          //   PaymentReconciliation paymentReconcile = PaymentReconciliation(
-          //   modeOfPayment: submitPaymentDetails.paymentReconciliation![9].modeOfPayment,
-          //   closingAmount: amounts[i],
-          //   );
-          //   paymentReconciliationList.add(paymentReconcile);
-          // }
+  Widget closeShiftBtnWidget(Future<ShiftManagement?> shiftManagementFuture) =>
+      ButtonWidget(
+        colorTxt: AppColors.fontWhiteColor,
+        isMarginRequired: false,
+        width: 600,
+        onPressed: () async {
+            for (TextEditingController controller in controllersMap.values) {
+                if (controller.text.isEmpty) {
+                  isEmptyController = true;
+                  break;
+                }
+                else {
+              isEmptyController = false;
+            }
+              }
+           if(!isEmptyController){
 
           ShiftManagement? submitPaymentDetails = await shiftManagementFuture;
 
-// // Initialize paymentReconciliationList if it's null
-// paymentReconciliationList ??= [];
-
-// for (var modeOfPayment in controllersMap.keys) {
-//   TextEditingController controller = controllersMap[modeOfPayment]!;
-//   double closingAmount = double.tryParse(controller.text) ?? 0.0;
-//   PaymentReconciliation paymentReconcile = PaymentReconciliation(
-//     modeOfPayment: modeOfPayment,
-//     closingAmount: closingAmount,
-//     openingAmount: submitPaymentDetails!.paymentReconciliation![2].openingAmount,
-//     expectedAmount: submitPaymentDetails!.paymentReconciliation![4].expectedAmount,
-
-//   );
-//   paymentReconciliationList!.add(paymentReconcile);
-// }
-//           await DbPaymentReconciliation().saveBalanceDetails(paymentReconciliationList!);
-
-
 // Initialize paymentReconciliationList if it's null
-paymentReconciliationList ??= [];
+          paymentReconciliationList ??= [];
 
 // Iterate through controllersMap to create PaymentReconciliation objects
-for (var modeOfPayment in controllersMap.keys) {
-  TextEditingController controller = controllersMap[modeOfPayment]!;
-  double closingAmount = double.tryParse(controller.text) ?? 0.0;
+          for (var modeOfPayment in controllersMap.keys) {
+            TextEditingController controller = controllersMap[modeOfPayment]!;
+            double closingAmount = double.tryParse(controller.text) ?? 0.0;
 
-  // Find the corresponding PaymentReconciliation object for the current modeOfPayment
-  PaymentReconciliation? paymentReconciliation;
-  for (var reconciliation in submitPaymentDetails!.paymentReconciliation!) {
-    if (reconciliation.modeOfPayment == modeOfPayment) {
-      paymentReconciliation = reconciliation;
-      break;
-    }
-  }
+            // Find the corresponding PaymentReconciliation object for the current modeOfPayment
+            PaymentReconciliation? paymentReconciliation;
+            for (var reconciliation
+                in submitPaymentDetails!.paymentReconciliation!) {
+              if (reconciliation.modeOfPayment == modeOfPayment) {
+                paymentReconciliation = reconciliation;
+                break;
+              }
+            }
 
-  // Use null-aware operator to get openingAmount, defaulting to 0 if paymentReconciliation is null
-  double openingAmount = paymentReconciliation?.openingAmount ?? 0.0;
-  double expectedAmount = paymentReconciliation?.expectedAmount ?? 0.0;
+            // Use null-aware operator to get openingAmount, defaulting to 0 if paymentReconciliation is null
+            double openingAmount = paymentReconciliation?.openingAmount ?? 0.0;
+            double expectedAmount =
+                paymentReconciliation?.expectedAmount ?? 0.0;
 
-  // Create PaymentReconciliation object using the fetched amounts
-  PaymentReconciliation paymentReconcile = PaymentReconciliation(
-    modeOfPayment: modeOfPayment,
-    closingAmount: closingAmount,
-    openingAmount: openingAmount,
-    expectedAmount: expectedAmount,
-  );
-  paymentReconciliationList!.add(paymentReconcile);
-}
+            // Create PaymentReconciliation object using the fetched amounts
+            PaymentReconciliation paymentReconcile = PaymentReconciliation(
+              modeOfPayment: modeOfPayment,
+              closingAmount: closingAmount,
+              openingAmount: openingAmount,
+              expectedAmount: expectedAmount,
+            );
+            paymentReconciliationList!.add(paymentReconcile);
+          }
 
           ShiftManagement shiftManagement = ShiftManagement(
-              periodStartDate: submitPaymentDetails!.periodStartDate,
-      periodEndDate: submitPaymentDetails.periodEndDate,
-      postingDate: submitPaymentDetails.postingDate,
-      posOpeningShift: submitPaymentDetails.posOpeningShift,
-      posProfile: submitPaymentDetails.posProfile,
-      doctype: submitPaymentDetails.doctype,
+            periodStartDate: submitPaymentDetails!.periodStartDate,
+            periodEndDate: submitPaymentDetails.periodEndDate,
+            postingDate: submitPaymentDetails.postingDate,
+            posOpeningShift: submitPaymentDetails.posOpeningShift,
+            posProfile: submitPaymentDetails.posProfile,
+            doctype: submitPaymentDetails.doctype,
             paymentsMethod: paymentMethods,
             paymentReconciliation: paymentReconciliationList,
           );
@@ -338,151 +277,151 @@ for (var modeOfPayment in controllersMap.keys) {
 
           // Save the shift management data before navigating to HomeTablet
           await DbShiftManagement().saveShiftManagementData(shiftManagement);
-     //   }
 
-       // setState(() {});
-        //submit shift api call
-        await submitShift(shiftManagement);
+          //submit shift api call
+          await submitShift(shiftManagement);
 
-        //If Shift gets synced in ERP clear the DB of close shift
-       // await DbShiftManagement().deleteShift();
-      },
-      title: CLOSE_SHIFT.toUpperCase(),
-      primaryColor: AppColors.getPrimary(),
-      height: 60,
-      fontSize: LARGE_FONT_SIZE,
-     
-    );
+          //If Shift gets synced in ERP clear the DB of close shift
+          await DbShiftManagement().deleteShift();
+          // await DbPaymentTypes().delete();
+           //await DbPaymentInfo().delete();
+        }
+         else if(isEmptyController) {
+            Helper.showPopup(context, "Please enter the payment amount");
+          }
+         },
 
-Future<void> submitShift( ShiftManagement shiftManagementFuture) async {
-  try {
-    // ShiftManagement? submitPaymentDetails =
-    //     await DbShiftManagement().getShiftManagement();
-       //   var closingAmountEntered = await DbPaymentReconciliation().getBalanceDetail();
+        title: CLOSE_SHIFT.toUpperCase(),
+        primaryColor: AppColors.getPrimary(),
+        height: 60,
+        fontSize: LARGE_FONT_SIZE,
+      );
 
-    // Calculate expected amount for each payment reconciliation
-    if (shiftManagementFuture != null) {
-      for (int i = 0;
-          i < shiftManagementFuture.paymentReconciliation!.length;
-          i++) {
-        // Ensure payment reconciliation and payment info list have the same length
-        if (i < shiftManagementFuture.paymentReconciliation!.length) {
-          shiftManagementFuture.paymentReconciliation![i].difference =
-              shiftManagementFuture.paymentReconciliation![i].expectedAmount -
-                  shiftManagementFuture.paymentReconciliation![i].closingAmount;
-        } else {
-          print(
-              'Error: Payment info list is shorter than payment reconciliation list');
+  Future<void> submitShift(ShiftManagement shiftManagementFuture) async {
+    try {
+      // Calculate expected amount for each payment reconciliation
+      if (shiftManagementFuture != null) {
+        for (int i = 0;
+            i < shiftManagementFuture.paymentReconciliation!.length;
+            i++) {
+          // Ensure payment reconciliation and payment info list have the same length
+          if (i < shiftManagementFuture.paymentReconciliation!.length) {
+            shiftManagementFuture.paymentReconciliation![i].difference =
+                shiftManagementFuture.paymentReconciliation![i].closingAmount -
+                    shiftManagementFuture
+                        .paymentReconciliation![i].expectedAmount;
+          } else {
+            print(
+                'Error: Payment info list is shorter than payment reconciliation list');
+          }
         }
       }
-    }
 
-    // Print the difference
-    for (var reconciliation in shiftManagementFuture.paymentReconciliation!) {
-      log('Difference: ${reconciliation.difference}');
-    }
-      
-
-    submitPaymentDetails = ShiftManagement(
-      periodStartDate: shiftManagementFuture.periodStartDate,
-      periodEndDate: shiftManagementFuture.periodEndDate,
-      postingDate: shiftManagementFuture.postingDate,
-      posOpeningShift:shiftManagementFuture.posOpeningShift,
-      posProfile: shiftManagementFuture.posProfile,
-      doctype: shiftManagementFuture.doctype,
-      paymentReconciliation:shiftManagementFuture.paymentReconciliation,
-      company:shiftManagementFuture.company
-    );
-
-    Map<String, dynamic> body = fetchOpeningShiftToMap(submitPaymentDetails!);
-
-    String apiUrl = SUBMIT_CLOSING_SHIFT;
-
-    final response = await APIUtils.postRequest(apiUrl, body);
-
-    if (response['message'] != null) {
-      log('Response of Submit SHift APi::$response');
-      // Navigate to HomeTablet
-      // ignore: use_build_context_synchronously
-      await Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeTablet(isShiftCreated: false),
-        ),
-      );
-      if (!mounted) return;
-      Helper.hideLoader(context);
-    } else {
-      log('API Request failed with status code $response');
-      log('Response body: $response');
-      log('Dbinstance Url:');
-    }
-  } catch (e) {
-    // Handle any exceptions during the request
-    log('Error: $e');
-  }
-}
-
-
-Future<ShiftManagement> fetchClosingShift() async {
-  try {
-    // Helper.showLoaderDialog(context);
-    // api theme path get and append
-    CommanResponse response = await ClosingShiftService.fetchClosingShiftData();
-    log('$response');
-
-    if (response.status != null && response.status!) {
-      // ignore: use_build_context_synchronously
-     // Helper.hideLoader(context);
-
-      log("Response: ${response.status}");
-
-      if (mounted) {
-       
-          return response.message; 
-        // _future = await response.message as Future<ShiftManagement>;
-        
+      // Print the difference
+      for (var reconciliation in shiftManagementFuture.paymentReconciliation!) {
+        log('Difference: ${reconciliation.difference}');
       }
-    } else {
+
+      submitPaymentDetails = ShiftManagement(
+          periodStartDate: shiftManagementFuture.periodStartDate,
+          periodEndDate: shiftManagementFuture.periodEndDate,
+          postingDate: shiftManagementFuture.postingDate,
+          posOpeningShift: shiftManagementFuture.posOpeningShift,
+          posProfile: shiftManagementFuture.posProfile,
+          doctype: shiftManagementFuture.doctype,
+          paymentReconciliation: shiftManagementFuture.paymentReconciliation,
+          company: shiftManagementFuture.company);
+
+      Map<String, dynamic> body = fetchOpeningShiftToMap(submitPaymentDetails!);
+
+      String apiUrl = SUBMIT_CLOSING_SHIFT;
+
+      final response = await APIUtils.postRequest(apiUrl, body);
+
+      if (response['message'] != null) {
+        log('Response of Submit Shift Api::$response');
+        // Navigate to HomeTablet
+        // ignore: use_build_context_synchronously
+        await Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeTablet(isShiftCreated: false),
+          ),
+        );
+        if (!mounted) return;
+        Helper.hideLoader(context);
+      } else {
+        log('API Request failed with status code $response');
+        log('Response body: $response');
+        log('Dbinstance Url:');
+      }
+    } catch (e) {
+      // Handle any exceptions during the request
+      log('Error: $e');
+    }
+  }
+
+  Future<ShiftManagement> fetchClosingShift() async {
+    try {
+      // Helper.showLoaderDialog(context);
+      // api theme path get and append
+      CommanResponse response =
+          await ClosingShiftService.fetchClosingShiftData();
+      log('$response');
+
+      if (response.status != null && response.status!) {
+        // ignore: use_build_context_synchronously
+        // Helper.hideLoader(context);
+
+        log("Response: ${response.status}");
+
+        if (mounted) {
+          return response.message;
+          // _future = await response.message as Future<ShiftManagement>;
+        }
+      } else {
+        if (mounted) {
+          //  Helper.hideLoader(context);
+          Helper.showPopup(context, response.message);
+        }
+      }
+    } catch (e) {
       if (mounted) {
-      //  Helper.hideLoader(context);
-        Helper.showPopup(context, response.message);
+        // Helper.hideLoader(context);
+        log('Exception Caught :: $e');
+        debugPrintStack();
+        Helper.showSnackBar(context, SOMETHING_WRONG);
       }
     }
-  } catch (e) {
-    if (mounted) {
-     // Helper.hideLoader(context);
-      log('Exception Caught :: $e');
-      debugPrintStack();
-      Helper.showSnackBar(context, SOMETHING_WRONG);
+    return ShiftManagement(paymentReconciliation: paymentReconciliationList);
+  }
+
+  static Map<String, dynamic> fetchOpeningShiftToMap(
+      ShiftManagement closingShift) {
+    // Function to format DateTime objects to string with "T" replaced by space
+    String formatDate(DateTime dateTime) {
+      return dateTime.toIso8601String().replaceAll('T', ' ');
     }
+
+    Map<String, dynamic> shiftMap = {
+      'period_start_date': formatDate(closingShift.periodStartDate!),
+      'posting_date': closingShift.postingDate != null
+          ? formatDate(closingShift.postingDate!)
+          : null,
+      'pos_profile': closingShift.posProfile,
+      'pos_opening_shift': closingShift.posOpeningShift,
+      'doctype': closingShift.doctype,
+      'payment_reconciliation': closingShift.paymentReconciliation!
+          .map((detail) => detail.toJson())
+          .toList(),
+    };
+
+    // Check if periodEndDate is not null before adding it to the map
+    if (closingShift.periodEndDate != null) {
+      shiftMap['period_end_date'] =
+          formatDate(closingShift.periodEndDate!); // Convert DateTime to string
+    }
+
+    return {"closing_shift": shiftMap};
   }
-  return ShiftManagement(paymentReconciliation: paymentReconciliationList);
 }
-
-static Map<String, dynamic> fetchOpeningShiftToMap(ShiftManagement closingShift) {
-  // Function to format DateTime objects to string with "T" replaced by space
-  String formatDate(DateTime dateTime) {
-    return dateTime.toIso8601String().replaceAll('T', ' ');
-  }
-
-  Map<String, dynamic> shiftMap = {
-    'period_start_date': formatDate(closingShift.periodStartDate!),
-    'posting_date': closingShift.postingDate != null ? formatDate(closingShift.postingDate!) : null, 
-    'pos_profile': closingShift.posProfile,
-    'pos_opening_shift' : closingShift.posOpeningShift,
-    'doctype': closingShift.doctype,
-    'payment_reconciliation': closingShift.paymentReconciliation!.map((detail) => detail.toJson()).toList(),
-  };
-
-  // Check if periodEndDate is not null before adding it to the map
-  if (closingShift.periodEndDate != null) {
-    shiftMap['period_end_date'] = formatDate(closingShift.periodEndDate!); // Convert DateTime to string
-  }
-
-  return {"closing_shift": shiftMap};
-}
-
-
-}
-

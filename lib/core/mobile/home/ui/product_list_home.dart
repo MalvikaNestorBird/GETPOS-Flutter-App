@@ -69,7 +69,7 @@ class _ProductListHomeState extends State<ProductListHome> {
   double _scrollToOffset(int index) {
     // Calculate the scroll offset for the given index
     // You'll need to adjust this based on your actual item heights
-    double itemHeight = 250;
+    double itemHeight = 300;
     return itemHeight * index;
   }
 

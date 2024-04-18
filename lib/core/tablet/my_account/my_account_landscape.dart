@@ -52,156 +52,159 @@ class _MyAccountLandscapeState extends State<MyAccountLandscape> {
   }
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      // color: const Color(0xFFF9F8FB),
-      // padding: paddingXY(),
-      child: Column(
-        children: [
-          hightSpacer20,
-          TitleAndSearchBar(
-            title: "My Profile",
-            searchBoxVisible: false,
-            onSubmit: (val) {},
-            onTextChanged: (val) {},
-            searchCtrl: null,
-            searchHint: "",
-            hideOperatorDetails: true,
-          ),
-          hightSpacer20,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        // color: const Color(0xFFF9F8FB),
+        // padding: paddingXY(),
+        child: Column(
+          children: [
+            hightSpacer20,
+            TitleAndSearchBar(
+              title: "My Profile",
+              searchBoxVisible: false,
+              onSubmit: (val) {},
+              onTextChanged: (val) {},
+              searchCtrl: null,
+              searchHint: "",
+              hideOperatorDetails: true,
+            ),
+            hightSpacer20,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        widthSpacer(5),
+                        SvgPicture.asset(
+                          MY_PROFILE_TAB_IMAGE,
+                          // color: MAIN_COLOR,
+                          width: 25,
+                        ),
+                        widthSpacer(10),
+                        Text(
+                          Helper.hubManager!.name,
+                          style: getTextStyle(
+                              fontSize: LARGE_MINUS_FONT_SIZE,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    hightSpacer20,
+                    Text(
+                      Helper.hubManager!.phone,
+                      style: getTextStyle(
+                          fontSize: LARGE_MINUS_FONT_SIZE,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                Text(
+                  Helper.hubManager!.emailId,
+                  style: getTextStyle(
+                      fontSize: LARGE_MINUS_FONT_SIZE,
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+            hightSpacer10,
+            Divider(thickness: 1, color: AppColors.getAsset().withOpacity(0.3)),
+            hightSpacer20,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                InkWell(
+                  onTap: () {
+                    debugPrint("Change Password clicked");
+                    setState(() {
+                      isChangePasswordVisible = true;
+                    });
+                  },
+                  child: Column(
                     children: [
-                      widthSpacer(5),
                       SvgPicture.asset(
-                        MY_PROFILE_TAB_IMAGE,
+                        isChangePasswordVisible
+                            ? CHANGE_PASS_ACTIVE_TAB_IMAGE
+                            : CHANGE_PASS_TAB_IMAGE,
                         // color: MAIN_COLOR,
-                        width: 25,
+                        width: iconWidth,
                       ),
-                      widthSpacer(10),
                       Text(
-                        Helper.hubManager!.name,
+                        "Change Password",
                         style: getTextStyle(
                             fontSize: LARGE_MINUS_FONT_SIZE,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
-                  hightSpacer20,
-                  Text(
-                    Helper.hubManager!.phone,
-                    style: getTextStyle(
-                        fontSize: LARGE_MINUS_FONT_SIZE,
-                        fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-              Text(
-                Helper.hubManager!.emailId,
-                style: getTextStyle(
-                    fontSize: LARGE_MINUS_FONT_SIZE,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-          hightSpacer10,
-          Divider(thickness: 1, color: AppColors.getAsset().withOpacity(0.3)),
-          hightSpacer20,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              InkWell(
-                onTap: () {
-                  debugPrint("Change Password clicked");
-                  setState(() {
-                    isChangePasswordVisible = true;
-                  });
-                },
-                child: Column(
-                  children: [
-                    SvgPicture.asset(
-                      isChangePasswordVisible
-                          ? CHANGE_PASS_ACTIVE_TAB_IMAGE
-                          : CHANGE_PASS_TAB_IMAGE,
-                      // color: MAIN_COLOR,
-                      width: iconWidth,
-                    ),
-                    Text(
-                      "Change Password",
-                      style: getTextStyle(
-                          fontSize: LARGE_MINUS_FONT_SIZE,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
                 ),
-              ),
-              InkWell(
-                onTap: () {
-                  debugPrint("Finance clicked");
-                  setState(() {
-                    isChangePasswordVisible = false;
-                  });
-                },
-                child: Column(
-                  children: [
-                    SvgPicture.asset(
-                      isChangePasswordVisible
-                          ? FINANCE_TAB_IMAGE
-                          : FINANCE_ACTIVE_TAB_IMAGE,
-                      width: iconWidth,
-                    ),
-                    Text(
-                      "Finance",
-                      style: getTextStyle(
-                          fontSize: LARGE_MINUS_FONT_SIZE,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () async {
-                  debugPrint("Logout clicked need to show popup");
-                  await Get.defaultDialog(
-                    // contentPadding: paddingXY(x: 0, y: 0),
-                    title: "",
-                    titlePadding: paddingXY(x: 0, y: 0),
-                    // custom: Container(),
-                    content: const LogoutPopupView(),
-                  );
-                },
-                child: Column(
-                  children: [
-                    SvgPicture.asset(
-                      LOGOUT_TAB_IMAGE,
-                      // color: MAIN_COLOR,
-                      width: iconWidth,
-                    ),
-                    Text("Logout",
+                InkWell(
+                  onTap: () {
+                    debugPrint("Finance clicked");
+                    setState(() {
+                      isChangePasswordVisible = false;
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      SvgPicture.asset(
+                        isChangePasswordVisible
+                            ? FINANCE_TAB_IMAGE
+                            : FINANCE_ACTIVE_TAB_IMAGE,
+                        width: iconWidth,
+                      ),
+                      Text(
+                        "Finance",
                         style: getTextStyle(
                             fontSize: LARGE_MINUS_FONT_SIZE,
-                            fontWeight: FontWeight.w500)),
-                  ],
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
-              )
-            ],
-          ),
-          Visibility(
-            visible: isChangePasswordVisible,
-            child: const ChangePasswordView(),
-          ),
-          Visibility(
-            visible: !isChangePasswordVisible,
-            child: FinanceView(cashCollected: cashCollected),
-          ),
-        ],
+                InkWell(
+                  onTap: () async {
+                    debugPrint("Logout clicked need to show popup");
+                    await Get.defaultDialog(
+                      // contentPadding: paddingXY(x: 0, y: 0),
+                      title: "",
+                      titlePadding: paddingXY(x: 0, y: 0),
+                      // custom: Container(),
+                      content: const LogoutPopupView(),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      SvgPicture.asset(
+                        LOGOUT_TAB_IMAGE,
+                        // color: MAIN_COLOR,
+                        width: iconWidth,
+                      ),
+                      Text("Logout",
+                          style: getTextStyle(
+                              fontSize: LARGE_MINUS_FONT_SIZE,
+                              fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            Visibility(
+              visible: isChangePasswordVisible,
+              child: const ChangePasswordView(),
+            ),
+            Visibility(
+              visible: !isChangePasswordVisible,
+              child: FinanceView(cashCollected: cashCollected),
+            ),
+          ],
+        ),
       ),
     );
   }

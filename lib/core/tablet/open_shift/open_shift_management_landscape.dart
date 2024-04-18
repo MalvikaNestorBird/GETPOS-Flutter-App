@@ -10,6 +10,7 @@ import 'package:nb_posx/constants/app_constants.dart';
 import 'package:nb_posx/constants/asset_paths.dart';
 import 'package:nb_posx/core/service/create_open_shift/service/create_opening_shift_api.dart';
 import 'package:nb_posx/core/tablet/home_tablet.dart';
+import 'package:nb_posx/core/tablet/widget/new_show_popup_widget.dart';
 import 'package:nb_posx/database/db_utils/db_constants.dart';
 import 'package:nb_posx/database/db_utils/db_payment_info.dart';
 import 'package:nb_posx/database/db_utils/db_payment_types.dart';
@@ -48,6 +49,7 @@ class _OpenShiftManagementState extends State<OpenShiftManagement> {
   List<PaymentType> paymentMethods = [];
   String selectedPosProfile = "";
   late List<TextEditingController> controllers;
+   bool isEmptyController = false;
 
   @override
   void initState() {
@@ -168,11 +170,11 @@ class _OpenShiftManagementState extends State<OpenShiftManagement> {
                           }).toList() ??
                           [],
                       onChanged: (value) {
-                        setState(() {
+                       // setState(() {
                           selectedPosProfile = value!;
                           loadPaymentMethods(selectedPosProfile);
                           DBPreferences().savePreference(SELECTED_POS_PROFILE_ID, selectedPosProfile);
-                        });
+                       // });
                       },
                     ),
                   ),
@@ -242,47 +244,66 @@ class _OpenShiftManagementState extends State<OpenShiftManagement> {
         isMarginRequired: false,
         width: 600,
         onPressed: () async {
-          if (selectedPosProfile.isNotEmpty && paymentMethods.isNotEmpty) {
-            // List<double> amounts = controllers.map((controller) => controller.text).cast<double>().toList();
-            List<double> amounts = [];
-            for (var text in controllers.map((controller) => controller.text)) {
-              try {
-                double amount = double.parse(text);
-                amounts.add(amount);
-              } catch (e) {
-                // Handle the error, such as logging it or skipping the invalid entry.
-                print("Error parsing amount: $e");
-              }
+          for (TextEditingController controller in controllers) {
+            if (controller.text.isEmpty) {
+              isEmptyController = true;
+              break;
+            } else {
+              isEmptyController = false;
             }
-            // Create a list of PaymentInfo objects
-            List<PaymentInfo> paymentInfoList = [];
-            for (int i = 0; i < paymentMethods.length; i++) {
-              PaymentInfo paymentInfo = PaymentInfo(
-                paymentType: paymentMethods[i].modeOfPayment,
-                amount: amounts[i],
-              );
-              paymentInfoList.add(paymentInfo);
-            }
-            await DbPaymentInfo().saveBalanceDetails(paymentInfoList);
-
-            ShiftManagement shiftManagement = ShiftManagement(
-              posProfile: selectedPosProfile,
-              paymentsMethod: paymentMethods,
-              paymentInfoList: paymentInfoList,
-            );
-            log('Shift Info: $shiftManagement');
-
-// Save the shift management data before navigating to HomeTablet
-            await DbShiftManagement().saveShiftManagementData(shiftManagement);
           }
 
-// Update the shift state
-          setState(() {
-            isShiftCreated = true;
-          });
-          await createOpeningShift(selectedPosProfile);
+          if (selectedPosProfile.isEmpty) {
+            Helper.showPopup(context, "Please select the POS Profile");
+          } 
+        else if (!isEmptyController) {
+            if (selectedPosProfile.isNotEmpty && paymentMethods.isNotEmpty) {
+              // List<double> amounts = controllers.map((controller) => controller.text).cast<double>().toList();
+              List<double> amounts = [];
+              for (var text
+                  in controllers.map((controller) => controller.text)) {
+                try {
+                  double amount = double.parse(text);
+                  amounts.add(amount);
+                } catch (e) {
+                  // Handle the error, such as logging it or skipping the invalid entry.
+                  print("Error parsing amount: $e");
+                }
+              }
+              // Create a list of PaymentInfo objects
+              List<PaymentInfo> paymentInfoList = [];
+              for (int i = 0; i < paymentMethods.length; i++) {
+                PaymentInfo paymentInfo = PaymentInfo(
+                  paymentType: paymentMethods[i].modeOfPayment,
+                  amount: amounts[i],
+                );
+                paymentInfoList.add(paymentInfo);
+              }
+              await DbPaymentInfo().saveBalanceDetails(paymentInfoList);
+
+              ShiftManagement shiftManagement = ShiftManagement(
+                posProfile: selectedPosProfile,
+                paymentsMethod: paymentMethods,
+                paymentInfoList: paymentInfoList,
+              );
+              log('Shift Info: $shiftManagement');
+
+// Save the shift management data before navigating to HomeTablet
+              await DbShiftManagement()
+                  .saveShiftManagementData(shiftManagement);
+            }
+            // Update the shift state
+            setState(() {
+              isShiftCreated = true;
+            });
+            await createOpeningShift(selectedPosProfile);
+          } 
+          else if(isEmptyController) {
+            Helper.showPopup(context, "Please enter the payment amount");
+          }
+
           //LeftSideMenu(isShiftCreated: true,selectedView:RxString(widget.selectedView!.value,));
-        },
+       },
         title: OPEN_SHIFT.toUpperCase(),
         primaryColor: AppColors.getPrimary(),
         height: 60,

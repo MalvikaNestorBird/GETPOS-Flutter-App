@@ -16,7 +16,7 @@ class DbShiftManagement {
     await box.put(SHIFT_ID,shiftManagement);
 
     // Close the Hive box
-    await box.close();
+   //await box.close();
   }
 
 Future<void> closeShiftManagement(ShiftManagement shiftManagement) async {
@@ -61,7 +61,6 @@ Future<int> deleteShift() async {
 Future<ShiftManagement> getShiftManagement() async {
   var box = await Hive.openBox<ShiftManagement>(SHIFT_MANAGEMENT_BOX);
   var shiftData = box.get(SHIFT_ID);
-  // await box.close();
   return shiftData!;
 }
 

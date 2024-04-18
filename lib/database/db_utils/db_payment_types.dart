@@ -23,19 +23,6 @@ class DbPaymentTypes {
   }
 
 
-//  Future<List<PaymentType>> getPaymentMethods(String selectedProfile) async {
-//   box = await Hive.openBox<PaymentType>(PAYMENT_METHOD_BOX);
-//   List<PaymentType> list = [];
-//   for (var paymentType in box.values) {
-//     if (paymentType.parent == selectedProfile) {
-//       list.add(paymentType); 
-//     }
-//   }
-// log('BOX:${box.values}');
-//   return list;
-// }
-
-
 ///
   /// FETCH THE PAYMENT METHODS BY PARENT i.e selected pos profile
   ///
@@ -59,4 +46,10 @@ Future<List<PaymentType>> getPaymentMethodsbyParent(String selectedProfile) asyn
     return paymentOptions;
   }
 
+
+ Future<void> delete() async {
+    box = await Hive.openBox<PaymentType>(PAYMENT_METHOD_BOX);
+    await box.clear();
+    await box.close();
+  }
 }

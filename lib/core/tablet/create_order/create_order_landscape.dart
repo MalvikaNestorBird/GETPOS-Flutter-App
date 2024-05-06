@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:nb_posx/configs/theme_dynamic_colors.dart';
 import 'package:nb_posx/core/service/customer/api/customer_api_service.dart';
 import 'package:nb_posx/core/service/product/api/products_api_service.dart';
+import 'package:nb_posx/database/db_utils/db_product.dart';
 import 'package:nb_posx/database/models/park_order.dart';
 import 'package:nb_posx/database/models/shift_management.dart';
 import 'package:nb_posx/utils/helper.dart';
@@ -62,6 +63,7 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
   ShiftManagement? shiftManagement;
   List<Product> products = [];
   List<Category> categories = [];
+  List<Product> categoriesByItemName=[];
   // ParkOrder? parkOrder;
   late List<OrderItem> items;
   late ScrollController _scrollController;
@@ -114,7 +116,7 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
               TitleAndSearchBar(
                 title: "Choose Category",
                 searchCtrl: searchCtrl,
-                searchHint: "Search product / category",
+                searchHint: "Search for category",
                 searchBoxWidth: size.width / 4,
                 onTap: () {
                   final state = _key.currentState;
@@ -127,7 +129,10 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
                 },
                 onSubmit: (text) {
                   if (searchCtrl.text.length >= 3) {
-                    _filterProductsCategories(searchCtrl.text);
+                    _filterProductsCategories(text);
+                 //   _filterProductsCategoriesByName(searchCtrl.text);
+
+                   // setState(() {});
                   } else {
                     getProducts();
                   }
@@ -750,16 +755,69 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
         duration: const Duration(seconds: 1), curve: Curves.easeInOutSine);
   }
 
-  void _filterProductsCategories(String searchTxt) {
-    categories = categories
-        .where((element) =>
-            element.items.any((element) =>
-                element.name.toLowerCase().contains(searchTxt.toLowerCase())) ||
-            element.name.toLowerCase().contains(searchTxt.toLowerCase()))
-        .toList();
+  // void _filterProductsCategories(String searchTxt) {
+  //   categories = categories
+  //       .where((element) =>
+  //           element.items.any((element) =>
+  //               element.name.toLowerCase().contains(searchTxt.toLowerCase())) ||
+  //           element.name.toLowerCase().contains(searchTxt.toLowerCase()))
+  //       .toList();
+  //       log("categories:$categories");
+  //  // categoriesByItemName=categoriesByItemName.where((element) => element.name.toLowerCase().contains(searchTxt.toLowerCase())).toList();
 
-    setState(() {});
+  //   setState(() {});
+  // }
+
+
+//To Search by Product and Category
+void _filterProductsCategories(String searchTxt) {
+  List<Category> filteredCategories = [];
+  bool searchTextFound = false;
+
+  // Switch case 1: Check if search text matches category names
+  switch (1) {
+    case 1:
+      filteredCategories = categories
+          .where((category) =>
+              category.name.toLowerCase().contains(searchTxt.toLowerCase()))
+          .toList();
+
+      if (filteredCategories.isNotEmpty) {
+        searchTextFound = true;
+      }
+      break;
   }
+
+  // If search text not found in category names, switch to next case
+  if (!searchTextFound) {
+    // Switch case 2: Filter categories based on product names
+    switch (2) {
+      case 2:
+        for (var category in categories) {
+          List<Product> filteredItems = category.items
+              .where((item) =>
+                  item.name.toLowerCase().contains(searchTxt.toLowerCase()))
+              .toList();
+          if (filteredItems.isNotEmpty) {
+            Category filteredCategory = Category(
+                id: category.id,
+                name: category.name,
+                items: filteredItems,
+                image: category.image);
+            filteredCategories.add(filteredCategory);
+          }
+        }
+        break;
+    }
+  }
+
+  setState(() {
+    // Update categories with the filtered categories
+    categories = filteredCategories;
+  });
+}
+
+
 
 // Method to call the callback function when the shift status changes
   void _updateShiftStatus(bool isShiftCreated) {

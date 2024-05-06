@@ -42,6 +42,7 @@ const Verify_URL = 'https://control-centre.nestorbird.com/api/method/control_cen
 const CUSTOMERS_PATH = 'method/getpos.getpos.api.get_customer_list_by_hubmanager';
 
 const CUSTOMER_PATH = 'method/getpos.getpos.api.get_customer';
+//changes oin query params : For Reference - getpos.getpos.api.get_customer?mobile_no=5
 
 const CREATE_CUSTOMER_PATH = 'method/getpos.getpos.api.create_customer';
 

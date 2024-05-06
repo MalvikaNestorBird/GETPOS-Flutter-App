@@ -76,7 +76,7 @@ class HomeLandscapeState extends State<HomeLandscape> {
             onSubmit: (text) {},
             onTextChanged: (changedtext) {},
             searchCtrl: searchCtrl,
-            searchHint: "Search products / Category",
+            searchHint: "Search for Category",
           ),
           hightSpacer20,
           getCategoryListWidget(),
@@ -300,7 +300,8 @@ class HomeLandscapeState extends State<HomeLandscape> {
         titlePadding: paddingXY(x: 0, y: 0),
         // custom: Container(),
         content: CreateCustomerPopup(
-          phoneNo: result,
+        phoneNo: result,
+        //name: result,
         ),
       );
     }

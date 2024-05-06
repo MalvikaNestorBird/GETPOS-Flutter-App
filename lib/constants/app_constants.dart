@@ -75,7 +75,7 @@ const PROCEED_TO_NXT_TXT = 'PROCCED TO NEXT';
 const CHECKOUT_TXT = 'CHECKOUT';
 const SELECT_CUSTOMER_ERROR = 'Please select the customer.';
 const SELECT_PRODUCT_ERROR = 'Please add the products in cart.';
-const SEARCH_PRODUCT_HINT_TXT = 'Search product / category';
+const SEARCH_PRODUCT_HINT_TXT = 'Searchcategory';
 
 //SELECT CUSTOMER SCREEN
 

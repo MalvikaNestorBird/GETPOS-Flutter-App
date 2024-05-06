@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../models/order_item.dart';
@@ -57,4 +59,21 @@ class DbProduct {
     box.close();
     return list;
   }
+
+  Future<List<Product>> getProductsByName(String productName) async {
+  box = await Hive.openBox<Product>(PRODUCT_BOX);
+  
+  log('HIVE BOX: $box');
+  List<Product> filteredProducts = [];
+
+  box.values
+      .where((product) => product.name.toLowerCase().contains(productName.toLowerCase()))
+      .forEach((product) => {
+        log('Product: $product'),
+        filteredProducts.add(product)
+      });
+
+  log('Filtered Products: $filteredProducts');
+  return filteredProducts;
+}
 }

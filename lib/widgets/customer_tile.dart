@@ -70,6 +70,7 @@ class _CustomerTileState extends State<CustomerTile> {
         children: [
           Row(
             // crossAxisAlignment: CrossAxisAlignment.center,
+        
             children: [
               Expanded(
                 child: Padding(

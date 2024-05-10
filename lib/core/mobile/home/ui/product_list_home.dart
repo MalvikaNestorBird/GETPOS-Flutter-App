@@ -892,9 +892,6 @@ class _ProductListHomeState extends State<ProductListHome> {
         }));
   }
 
-  // Future<bool> isInternetAvailable() async {
-  //  return await Helper.isNetworkAvailable();
-  // }
 
   Future<void> getProducts() async {
     //Fetching data from DbProduct database

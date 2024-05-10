@@ -51,7 +51,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   String? orderId;
-  bool _isCODSelected = false;
+  bool _isCODSelected = true;
   bool isPromoCodeAvailableForUse = false;
   double? totalAmount;
   double subTotalAmount = 0.0;
@@ -237,10 +237,10 @@ class _CartScreenState extends State<CartScreen> {
             child: Row(
               children: [
                 getPaymentOption(
-                    PAYMENT_CARD_ICON, CARD_PAYMENT_TXT, !_isCODSelected),
-                widthSpacer(15),
-                getPaymentOption(
                     PAYMENT_CASH_ICON, CASH_PAYMENT_TXT, _isCODSelected),
+                widthSpacer(15),
+                    getPaymentOption(
+                    PAYMENT_CARD_ICON, CARD_PAYMENT_TXT, !_isCODSelected),
               ],
             ),
           ),

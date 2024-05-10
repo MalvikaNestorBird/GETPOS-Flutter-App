@@ -76,7 +76,7 @@ class HomeLandscapeState extends State<HomeLandscape> {
             onSubmit: (text) {},
             onTextChanged: (changedtext) {},
             searchCtrl: searchCtrl,
-            searchHint: "Search for Category",
+            searchHint: "Search for product/category",
           ),
           hightSpacer20,
           getCategoryListWidget(),

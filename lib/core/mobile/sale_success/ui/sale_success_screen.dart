@@ -131,7 +131,7 @@ class _SaleSuccessScreenState extends State<SaleSuccessScreen> {
     try {
       bool isPrintSuccessful = await Helper().printInvoice(widget.placedOrder);
       if (!isPrintSuccessful && mounted) {
-        Helper.showPopup(context, "Print operation cancelled by you.");
+       // Helper.showPopup(context, "Print operation cancelled by you.");
       }
     } catch (e) {
       // ignore: use_build_context_synchronously

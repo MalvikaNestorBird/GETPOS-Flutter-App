@@ -344,8 +344,8 @@ class _ProductListHomeState extends State<ProductListHome> {
                                         children: [
                                           Container(
                                             margin:
-                                                const EdgeInsets.only(left: 5),
-                                            height: 60,
+                                                const EdgeInsets.only(left:10),
+                                            height: 70,
                                             clipBehavior:
                                                 Clip.antiAliasWithSaveLayer,
                                             decoration: const BoxDecoration(
@@ -384,7 +384,8 @@ class _ProductListHomeState extends State<ProductListHome> {
                                             style: getTextStyle(
                                                 fontWeight: FontWeight.normal,
                                                 fontSize: SMALL_PLUS_FONT_SIZE),
-                                          )
+                                          ),
+                                          
                                         ],
                                       ));
                                 })),
@@ -903,16 +904,65 @@ class _ProductListHomeState extends State<ProductListHome> {
     setState(() {});
   }
 
-  void _filterProductsCategories(String searchTxt) {
-    categories = categories
-        .where((element) =>
-            element.items.any((element) =>
-                element.name.toLowerCase().contains(searchTxt.toLowerCase())) ||
-            element.name.toLowerCase().contains(searchTxt.toLowerCase()))
-        .toList();
+  // void _filterProductsCategories(String searchTxt) {
+  //   categories = categories
+  //       .where((element) =>
+  //           element.items.any((element) =>
+  //               element.name.toLowerCase().contains(searchTxt.toLowerCase())) ||
+  //           element.name.toLowerCase().contains(searchTxt.toLowerCase()))
+  //       .toList();
 
-    setState(() {});
+  //   setState(() {});
+  // }
+
+
+//To Search by Product and Category
+void _filterProductsCategories(String searchTxt) {
+  List<Category> filteredCategories = [];
+  bool searchTextFound = false;
+
+  // Switch case 1: Check if search text matches category names
+  switch (1) {
+    case 1:
+      filteredCategories = categories
+          .where((category) =>
+              category.name.toLowerCase().contains(searchTxt.toLowerCase()))
+          .toList();
+
+      if (filteredCategories.isNotEmpty) {
+        searchTextFound = true;
+      }
+      break;
   }
+
+  // If search text not found in category names, switch to next case
+  if (!searchTextFound) {
+    // Switch case 2: Filter categories based on product names
+    switch (2) {
+      case 2:
+        for (var category in categories) {
+          List<Product> filteredItems = category.items
+              .where((item) =>
+                  item.name.toLowerCase().contains(searchTxt.toLowerCase()))
+              .toList();
+          if (filteredItems.isNotEmpty) {
+            Category filteredCategory = Category(
+                id: category.id,
+                name: category.name,
+                items: filteredItems,
+                image: category.image);
+            filteredCategories.add(filteredCategory);
+          }
+        }
+        break;
+    }
+  }
+
+  setState(() {
+    // Update categories with the filtered categories
+    categories = filteredCategories;
+  });
+}
 
   // _getManagerName() async {
   //   // await DBPreferences().getPreference(Manager);

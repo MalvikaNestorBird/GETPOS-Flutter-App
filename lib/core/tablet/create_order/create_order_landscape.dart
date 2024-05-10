@@ -116,7 +116,7 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
               TitleAndSearchBar(
                 title: "Choose Category",
                 searchCtrl: searchCtrl,
-                searchHint: "Search for category",
+                searchHint: "Search for product/category",
                 searchBoxWidth: size.width / 4,
                 onTap: () {
                   final state = _key.currentState;
@@ -535,6 +535,8 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
                                         //     : Image.memory(cat
                                         //         .items[position].productImage),
                                         )),
+
+                          
                                 Container(
                                     padding: const EdgeInsets.all(6),
                                     margin: const EdgeInsets.only(left: 45),
@@ -573,117 +575,182 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
     setState(() {});
   }
 
-  getCategoryListWidg() {
-    return SizedBox(
-      height: 110,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: categories.length,
-          itemBuilder: (context, position) {
-            return GestureDetector(
-              onTap: (() {
-                // log("TAPPED:::::");
-                final state = _key.currentState;
-                if (state != null && state.isOpen) {
-                  state.toggle();
-                }
-                _scrollToIndex(position);
-              }),
-              child: categories.isEmpty
-                  ? const Center(
-                      child: Text(
-                      "No items found",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
-                    ))
-                  : Container(
-                      margin: paddingXY(y: 5),
-                      width: 90,
-                      decoration: BoxDecoration(
-                        color: AppColors.fontWhiteColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              margin: const EdgeInsets.only(left: 5),
-                              height: 50,
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: (isInternetAvailable &&
-                                      (categories[position]
-                                          .items[0]
-                                          .productImageUrl!
-                                          .isNotEmpty))
-                                  //         !=
-                                  //     null ||
-                                  // categories[position]
-                                  //     .items[0]
-                                  //     .productImageUrl!
-                                  //     .isNotEmpty))
-                                  ? Image.network(
-                                      categories[position]
-                                          .items[0]
-                                          .productImageUrl!,
-                                      fit: BoxFit.fill,
-                                      // height: 50,
-                                      // width: 50,
-                                    )
-                                  : (isInternetAvailable &&
-                                          (categories[position]
-                                              .items[0]
-                                              .productImageUrl!
-                                              .isEmpty))
-                                      ? Image.asset(
-                                          NO_IMAGE,
-                                          fit: BoxFit.fill,
-                                        )
-                                      : Image.asset(
-                                          NO_IMAGE,
-                                          fit: BoxFit.fill,
-                                        ))
-                          // categories[position].image.isNotEmpty
-                          //     ? Image.memory(
-                          //         categories[position]
-                          //             .items
-                          //             .first
-                          //             .productImage,
-                          //         height: 50,
-                          //         width: 50,
-                          //         fit: BoxFit.fill,
-                          //       )
-                          //     : Image.asset(
-                          //         NO_IMAGE,
-                          //         fit: BoxFit.fill,
-                          //       ))
+  // getCategoryListWidg() {
+  //   return SizedBox(
+  //     height: 110,
+  //     child: ListView.builder(
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: categories.length,
+  //         itemBuilder: (context, position) {
+  //           return GestureDetector(
+  //             onTap: (() {
+  //               // log("TAPPED:::::");
+  //               final state = _key.currentState;
+  //               if (state != null && state.isOpen) {
+  //                 state.toggle();
+  //               }
+  //               _scrollToIndex(position);
+  //             }),
+  //             child: categories.isEmpty
+  //                 ? const Center(
+  //                     child: Text(
+  //                     "No items found",
+  //                     style: TextStyle(
+  //                         fontWeight: FontWeight.bold, color: Colors.black),
+  //                   ))
+  //                 : Container(
+  //                     margin: paddingXY(y: 5),
+  //                     width: 90,
+  //                     decoration: BoxDecoration(
+  //                       color: AppColors.fontWhiteColor,
+  //                       borderRadius: BorderRadius.circular(10),
+  //                     ),
+  //                     child: Column(
+  //                       mainAxisSize: MainAxisSize.max,
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: [
+  //                         Container(
+  //                             margin: const EdgeInsets.only(left: 5),
+  //                             height: 50,
+  //                             clipBehavior: Clip.antiAliasWithSaveLayer,
+  //                             decoration: const BoxDecoration(
+  //                               shape: BoxShape.circle,
+  //                             ),
+  //                             child: (isInternetAvailable &&
+  //                                     (categories[position]
+  //                                         .items[0]
+  //                                         .productImageUrl!
+  //                                         .isNotEmpty))
+  //                                 //         !=
+  //                                 //     null ||
+  //                                 // categories[position]
+  //                                 //     .items[0]
+  //                                 //     .productImageUrl!
+  //                                 //     .isNotEmpty))
+  //                                 ? Image.network(
+  //                                     categories[position]
+  //                                         .items[0]
+  //                                         .productImageUrl!,
+  //                                     fit: BoxFit.fill,
+  //                                     // height: 50,
+  //                                     // width: 50,
+  //                                   )
+  //                                 : (isInternetAvailable &&
+  //                                         (categories[position]
+  //                                             .items[0]
+  //                                             .productImageUrl!
+  //                                             .isEmpty))
+  //                                     ? Image.asset(
+  //                                         NO_IMAGE,
+  //                                         fit: BoxFit.fill,
+  //                                       )
+  //                                     : Image.asset(
+  //                                         NO_IMAGE,
+  //                                         fit: BoxFit.fill,
+  //                                       ))
+  //                         // categories[position].image.isNotEmpty
+  //                         //     ? Image.memory(
+  //                         //         categories[position]
+  //                         //             .items
+  //                         //             .first
+  //                         //             .productImage,
+  //                         //         height: 50,
+  //                         //         width: 50,
+  //                         //         fit: BoxFit.fill,
+  //                         //       )
+  //                         //     : Image.asset(
+  //                         //         NO_IMAGE,
+  //                         //         fit: BoxFit.fill,
+  //                         //       ))
 
-                          // Image.asset(
-                          //     BURGAR_IMAGE,
-                          //     height: 50,
-                          //     width: 50,
-                          //     fit: BoxFit.fill,
-                          //   ),
-                          ,
-                          Text(
-                            categories[position].name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: getTextStyle(
-                              fontSize: SMALL_PLUS_FONT_SIZE,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-            );
+  //                         // Image.asset(
+  //                         //     BURGAR_IMAGE,
+  //                         //     height: 50,
+  //                         //     width: 50,
+  //                         //     fit: BoxFit.fill,
+  //                         //   ),
+  //                         ,
+  //                         Text(
+  //                           categories[position].name,
+  //                           maxLines: 1,
+  //                           overflow: TextOverflow.ellipsis,
+  //                           style: getTextStyle(
+  //                             fontSize: SMALL_PLUS_FONT_SIZE,
+  //                             fontWeight: FontWeight.w500,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //           );
+  //         }),
+  //   );
+  // }
+
+  getCategoryListWidg() {
+  return SizedBox(
+    height: 110,
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: categories.length,
+      itemBuilder: (context, position) {
+        return GestureDetector(
+          onTap: (() {
+            final state = _key.currentState;
+            if (state != null && state.isOpen) {
+              state.toggle();
+            }
+            _scrollToIndex(position);
           }),
-    );
-  }
+          child: Container(
+            margin: paddingXY(y: 5),
+            width: 90,
+            decoration: BoxDecoration(
+              color: AppColors.fontWhiteColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 5),
+                  height: 50,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: (categories[position].items.isNotEmpty)
+                      ? Image.memory(
+                          categories[position].items[0].productImage!,
+                          fit: BoxFit.fill,
+                          errorBuilder:(context, error, stackTrace) {
+                            return Image.asset(NO_IMAGE);  
+                          }, 
+                        )
+                      : Image.asset(
+                          NO_IMAGE,
+                          fit: BoxFit.fill,
+                        ),
+                ),
+                Text(
+                  categories[position].name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: getTextStyle(
+                    fontSize: SMALL_PLUS_FONT_SIZE,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 
   Future<void> checkInternetAvailability() async {
     try {

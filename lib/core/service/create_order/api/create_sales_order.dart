@@ -27,7 +27,9 @@ import '../../../../database/models/sales_order_req_items.dart'
 import '../model/create_sales_order_response.dart';
 
 class CreateOrderService {
+  
   Future<CommanResponse> createOrder(SaleOrder order) async {
+    String posProfileId = "";
     if (await Helper.isNetworkAvailable()) {
       List<request_sales.SaleOrderRequestItems> items = [];
       for (OrderItem item in order.items) {
@@ -61,9 +63,16 @@ class CreateOrderService {
           DateFormat('yyyy-MM-dd HH:mm:ss').format(order.tracsactionDateTime);
       log('Formatted Transaction Date Time :: $transactionDateTime');
 
-      //fetch pos cashier id
-      var posProfileId = await DbCreateShift().getOpeningShiftData();
-      log("POS Profile Id: $posProfileId");
+      // //fetch pos cashier id
+      // var posProfileId = await DbCreateShift().getOpeningShiftData();
+      // log("POS Profile Id: $posProfileId");
+
+
+var posProfileId = await DbCreateShift().getOpeningShiftData();
+log("POS Profile Id: $posProfileId");
+
+// Check if posProfileId is not null, then assign its name, otherwise assign an empty string
+var posProfileName = posProfileId != null ? posProfileId.name : "";
 
       //fetch pos profile
       var selectedPosProfile = await DBPreferences().getPreference(SELECTED_POS_PROFILE_ID);
@@ -71,7 +80,7 @@ class CreateOrderService {
       //SALES ORDER REQUEST BODY 
       SalesOrderRequest orderRequest = SalesOrderRequest(
         name: selectedPosProfile,
-        posOpeningShift: posProfileId!.name,
+        posOpeningShift: posProfileName,
         hubManager: order.manager.emailId,
         // ward: "order.customer.ward.id",
         customer: order.customer.id,

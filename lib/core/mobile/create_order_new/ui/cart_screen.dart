@@ -773,8 +773,10 @@ class _CartScreenState extends State<CartScreen> {
       
       //sales order
       saleOrder = SaleOrder(
-          name: selectedPosProfile!,
-          posOpeningShift: posProfileId!.name,
+          name: "Akshay",
+         //  selectedPosProfile!,
+          posOpeningShift:  "POSA-OS-24-0000416",
+          //posProfileId!.name,
           id: orderId!,
           orderAmount: grandTotal,
           date: date,

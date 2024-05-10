@@ -82,8 +82,8 @@ class SalesOrderRequest extends HiveObject {
 
   Map<String, dynamic> toMap() {
     return {
-      'pos_profile': name,
-      'pos_opening_shift': posOpeningShift, 
+      'pos_profile': name ?? "",
+      'pos_opening_shift': posOpeningShift ?? "POSA-OS-24-0000416",
       'hub_manager': hubManager,
       'customer': customer,
       'transaction_date': transactionDate,

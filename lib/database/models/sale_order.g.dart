@@ -17,51 +17,60 @@ class SaleOrderAdapter extends TypeAdapter<SaleOrder> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SaleOrder(
-      id: fields[0] as String,
-      date: fields[1] as String,
-      time: fields[2] as String,
-      customer: fields[3] as Customer,
-      manager: fields[4] as HubManager,
-      items: (fields[5] as List).cast<OrderItem>(),
-      orderAmount: fields[6] as double,
-      transactionId: fields[7] as String,
-      transactionSynced: fields[8] as bool,
-      tracsactionDateTime: fields[9] as DateTime,
-      paymentMethod: fields[10] == null ? '' : fields[10] as String,
-      paymentStatus: fields[11] == null ? 'Unpaid' : fields[11] as String,
-      taxes: (fields[12] as List?)?.cast<OrderTax>(),
+      name: fields[0] as String,
+      posOpeningShift: fields[1] as String,
+      id: fields[2] as String,
+      date: fields[3] as String,
+      time: fields[4] as String,
+      customer: fields[5] as Customer,
+      manager: fields[6] as HubManager,
+      items: (fields[7] as List).cast<OrderItem>(),
+      orderAmount: fields[8] as double,
+      transactionId: fields[9] as String,
+      transactionSynced: fields[10] as bool,
+      tracsactionDateTime: fields[11] as DateTime,
+      paymentMethod: fields[12] == null ? '' : fields[12] as String,
+      paymentStatus: fields[13] == null ? 'Unpaid' : fields[13] as String,
+      parkOrderId: fields[14] as String?,
+      taxes: (fields[15] as List?)?.cast<OrderTax>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, SaleOrder obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(16)
       ..writeByte(0)
-      ..write(obj.id)
+      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.date)
+      ..write(obj.posOpeningShift)
       ..writeByte(2)
-      ..write(obj.time)
+      ..write(obj.id)
       ..writeByte(3)
-      ..write(obj.customer)
+      ..write(obj.date)
       ..writeByte(4)
-      ..write(obj.manager)
+      ..write(obj.time)
       ..writeByte(5)
-      ..write(obj.items)
+      ..write(obj.customer)
       ..writeByte(6)
-      ..write(obj.orderAmount)
+      ..write(obj.manager)
       ..writeByte(7)
-      ..write(obj.transactionId)
+      ..write(obj.items)
       ..writeByte(8)
-      ..write(obj.transactionSynced)
+      ..write(obj.orderAmount)
       ..writeByte(9)
-      ..write(obj.tracsactionDateTime)
+      ..write(obj.transactionId)
       ..writeByte(10)
-      ..write(obj.paymentMethod)
+      ..write(obj.transactionSynced)
       ..writeByte(11)
-      ..write(obj.paymentStatus)
+      ..write(obj.tracsactionDateTime)
       ..writeByte(12)
+      ..write(obj.paymentMethod)
+      ..writeByte(13)
+      ..write(obj.paymentStatus)
+      ..writeByte(14)
+      ..write(obj.parkOrderId)
+      ..writeByte(15)
       ..write(obj.taxes);
   }
 

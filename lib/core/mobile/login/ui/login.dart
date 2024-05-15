@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +9,9 @@ import 'package:nb_posx/configs/theme_dynamic_colors.dart';
 import 'package:nb_posx/core/mobile/home/ui/product_list_home.dart';
 import 'package:nb_posx/core/mobile/theme/theme_setting_screen.dart';
 import 'package:nb_posx/database/db_utils/db_constants.dart';
-import 'package:nb_posx/database/db_utils/db_customer.dart';
 import 'package:nb_posx/database/db_utils/db_instance_url.dart';
-import 'package:nb_posx/database/db_utils/db_order_item.dart';
-import 'package:nb_posx/database/db_utils/db_order_tax.dart';
-import 'package:nb_posx/database/db_utils/db_order_tax_template.dart';
 import 'package:nb_posx/database/db_utils/db_preferences.dart';
 import 'package:nb_posx/database/db_utils/db_product.dart';
-import 'package:nb_posx/database/db_utils/db_sale_order.dart';
 import 'package:nb_posx/database/models/product.dart';
 import 'package:nb_posx/main.dart';
 import 'package:nb_posx/utils/helpers/sync_helper.dart';
@@ -421,9 +415,9 @@ class _LoginState extends State<Login> {
   }
 
   Future<bool> _onBackPressed() async {
-    var res = await Helper.showConfirmationPopup(
-        context, CLOSE_APP_QUESTION, OPTION_YES,
-        hasCancelAction: true);
+    // var res = await Helper.showConfirmationPopup(
+    //     context, CLOSE_APP_QUESTION, OPTION_YES,
+    //     hasCancelAction: true);
 
     return false;
   }

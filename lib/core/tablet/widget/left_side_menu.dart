@@ -9,6 +9,7 @@ import '../../../utils/ui_utils/padding_margin.dart';
 import '../../../utils/ui_utils/spacer_widget.dart';
 import '../../../utils/ui_utils/text_styles/custom_text_style.dart';
 
+// ignore: must_be_immutable
 class LeftSideMenu extends StatelessWidget {
   final RxString selectedView;
   bool isShiftCreated;

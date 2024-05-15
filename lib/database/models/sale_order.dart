@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:nb_posx/database/models/order_tax_template.dart';
 import 'package:nb_posx/database/models/orderwise_tax.dart';
 
 import '../db_utils/db_constants.dart';
@@ -15,47 +14,56 @@ part 'sale_order.g.dart';
 @HiveType(typeId: SaleOrderBoxTypeId)
 class SaleOrder extends HiveObject {
   @HiveField(0)
-  String id;
+  String name;
 
   @HiveField(1)
-  String date;
+  String posOpeningShift;
 
   @HiveField(2)
-  String time;
+  String id;
 
   @HiveField(3)
-  Customer customer;
+  String date;
 
   @HiveField(4)
-  HubManager manager;
+  String time;
 
   @HiveField(5)
-  List<OrderItem> items;
+  Customer customer;
 
   @HiveField(6)
-  double orderAmount;
+  HubManager manager;
 
   @HiveField(7)
-  String transactionId;
+  List<OrderItem> items;
 
   @HiveField(8)
-  bool transactionSynced;
+  double orderAmount;
 
   @HiveField(9)
+  String transactionId;
+
+  @HiveField(10)
+  bool transactionSynced;
+
+  @HiveField(11)
   DateTime tracsactionDateTime;
 
-  @HiveField(10, defaultValue: "")
+  @HiveField(12, defaultValue: "")
   String paymentMethod;
 
-  @HiveField(11, defaultValue: "Unpaid")
+  @HiveField(13, defaultValue: "Unpaid")
   String paymentStatus;
 
+  @HiveField(14)
   String? parkOrderId;
 
-  @HiveField(12)
+  @HiveField(15)
   List<OrderTax>? taxes;
-
+ 
   SaleOrder({
+    required this.name,
+    required this.posOpeningShift,
     required this.id,
     required this.date,
     required this.time,
@@ -73,6 +81,8 @@ class SaleOrder extends HiveObject {
   });
 
   SaleOrder copyWith({
+    String? name,
+    String? posOpeningShift,
     String? id,
     String? date,
     String? time,
@@ -88,6 +98,8 @@ class SaleOrder extends HiveObject {
     List<OrderTax>? taxes,
   }) {
     return SaleOrder(
+      name: name ?? this.name,
+      posOpeningShift: posOpeningShift ?? this.posOpeningShift,
       id: id ?? this.id,
       date: date ?? this.date,
       time: time ?? this.time,
@@ -106,6 +118,8 @@ class SaleOrder extends HiveObject {
 
   Map<String, dynamic> toMap() {
     return {
+      'pos_profile': name,
+      'pos_opening_shift': posOpeningShift,
       'id': id,
       'date': date,
       'time': time,
@@ -124,20 +138,20 @@ class SaleOrder extends HiveObject {
 
   factory SaleOrder.fromMap(Map<String, dynamic> map) {
     return SaleOrder(
+      name: map['pos_profile'],
+      posOpeningShift: map['pos_opening_shift'],
       id: map['id'],
       date: map['date'],
       time: map['time'],
       customer: Customer.fromMap(map['customer']),
       manager: HubManager.fromMap(map['manager']),
-      items:
-          List<OrderItem>.from(map['items']?.map((x) => OrderItem.fromMap(x))),
+      items:List<OrderItem>.from(map['items']?.map((x) => OrderItem.fromMap(x))),
       orderAmount: map['orderAmount'],
       transactionId: map['transactionId'],
       paymentMethod: map['paymentMethod'],
       paymentStatus: map['paymentStatus'],
       transactionSynced: map['transactionSynced'],
       tracsactionDateTime: map['tracsactionDateTime'],
-    //  taxes: map['taxes'],
     taxes: List<OrderTax>.from(map['taxes']?.map((x)  => OrderItem.fromMap(x))),
     );
   }
@@ -149,7 +163,7 @@ class SaleOrder extends HiveObject {
 
   @override
   String toString() {
-    return 'SaleOrder(id: $id, date: $date, time: $time, customer: $customer, manager: $manager, items: $items, orderAmount: $orderAmount, transactionId: $transactionId, transactionSynced: $transactionSynced, tracsactionDateTime: $tracsactionDateTime, taxes: $taxes )';
+    return 'SaleOrder(id: $id, date: $date, time: $time, customer: $customer, manager: $manager, items: $items, orderAmount: $orderAmount, transactionId: $transactionId, transactionSynced: $transactionSynced, tracsactionDateTime: $tracsactionDateTime, taxes: $taxes, pos_profile: $name )';
   }
 
   @override
@@ -157,6 +171,7 @@ class SaleOrder extends HiveObject {
     if (identical(this, other)) return true;
 
     return other is SaleOrder &&
+        other.name == name &&
         other.id == id &&
         other.date == date &&
         other.time == time &&
@@ -174,7 +189,9 @@ class SaleOrder extends HiveObject {
 
   @override
   int get hashCode {
-    return id.hashCode ^
+    return 
+        name.hashCode ^
+        id.hashCode ^
         date.hashCode ^
         time.hashCode ^
         customer.hashCode ^
@@ -187,5 +204,6 @@ class SaleOrder extends HiveObject {
         transactionSynced.hashCode ^
         tracsactionDateTime.hashCode ^
         taxes.hashCode;
+        
   }
 }

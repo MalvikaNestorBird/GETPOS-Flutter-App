@@ -17,37 +17,43 @@ class SalesOrderRequestAdapter extends TypeAdapter<SalesOrderRequest> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SalesOrderRequest(
-      hubManager: fields[0] as String?,
-      customer: fields[1] as String?,
-      transactionDate: fields[2] as String?,
-      deliveryDate: fields[3] as String?,
-      items: (fields[4] as List?)?.cast<SaleOrderRequestItems>(),
-      modeOfPayment: fields[5] as String?,
-      mpesaNo: fields[6] as String?,
-      tax: (fields[7] as List?)?.cast<OrderTax>(),
+      name: fields[0] as String?,
+      posOpeningShift: fields[1] as String?,
+      hubManager: fields[9] as String?,
+      customer: fields[2] as String?,
+      transactionDate: fields[3] as String?,
+      deliveryDate: fields[4] as String?,
+      items: (fields[5] as List?)?.cast<SaleOrderRequestItems>(),
+      modeOfPayment: fields[6] as String?,
+      mpesaNo: fields[7] as String?,
+      tax: (fields[8] as List?)?.cast<OrderTax>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, SalesOrderRequest obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(10)
       ..writeByte(0)
-      ..write(obj.hubManager)
+      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.customer)
+      ..write(obj.posOpeningShift)
       ..writeByte(2)
-      ..write(obj.transactionDate)
+      ..write(obj.customer)
       ..writeByte(3)
-      ..write(obj.deliveryDate)
+      ..write(obj.transactionDate)
       ..writeByte(4)
-      ..write(obj.items)
+      ..write(obj.deliveryDate)
       ..writeByte(5)
-      ..write(obj.modeOfPayment)
+      ..write(obj.items)
       ..writeByte(6)
-      ..write(obj.mpesaNo)
+      ..write(obj.modeOfPayment)
       ..writeByte(7)
-      ..write(obj.tax);
+      ..write(obj.mpesaNo)
+      ..writeByte(8)
+      ..write(obj.tax)
+      ..writeByte(9)
+      ..write(obj.hubManager);
   }
 
   @override

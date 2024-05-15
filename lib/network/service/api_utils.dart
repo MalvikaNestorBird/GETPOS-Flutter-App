@@ -75,8 +75,9 @@ class APIUtils {
       http.Response apiResponse = await http.post(await _apiPath(apiUrl),
           body: jsonEncode(requestBody),
           headers: enableHeader ? await _headers() : {});
-      print(apiResponse);
+     
       log('Request Body :$requestBody');
+       print(apiResponse);
 
       //Checking for the response code and handling the result.
       return _returnResponse(apiResponse);
@@ -105,28 +106,17 @@ class APIUtils {
     }
   }
 
-  static Future<Uri> _apiPath(String url) async {
-    //Parsing the apiURl to Uri
-    // if (instanceUrl == "https://$instanceUrl/api/") {
-    //   Uri uri = Uri.parse(instanceUrl + url);
-    //   log('API URL inside _apipath if :: $uri');
-    //   return uri;
-    // } else {
-       
+  static Future<Uri> _apiPath(String url) async {   
     var dbPreferences = DBPreferences();
-    
-                  String prefix = await dbPreferences.getPreference(SSL_PREFIX); 
-
+    String prefix = await dbPreferences.getPreference(SSL_PREFIX); 
     String appendInstanceUrl = await _getUrlKey();
     instanceUrl = "$prefix://$appendInstanceUrl/api/";
+    DBPreferences().savePreference(INSTANCE_URL, instanceUrl);
     Uri uri = Uri.parse(instanceUrl + url);
     log('API URL :: $uri');
     return uri;
-    // }
-    // Uri uri = Uri.parse(instanceUrl + url);
-    // log('API URL :: $uri');
-    // return uri;
   }
+
  static Uri _apiPathVerify(String url) {
     //Parsing the apiURl to Uri
     Uri uri = Uri.parse( url);

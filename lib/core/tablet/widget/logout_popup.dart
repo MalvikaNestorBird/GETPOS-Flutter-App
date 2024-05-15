@@ -330,13 +330,13 @@ class _LogoutPopupViewState extends State<LogoutPopupView> {
             //   ),
             // );
             if (!mounted) return;
-            var res = await Helper.showConfirmationPopup(
-                context, LOGOUT_QUESTION, OPTION_YES,
-                hasCancelAction: true);
-            if (res != OPTION_CANCEL.toLowerCase()) {
+            // var res = await Helper.showConfirmationPopup(
+            //     context, LOGOUT_QUESTION, OPTION_YES,
+            //     hasCancelAction: true);
+            // if (res != OPTION_CANCEL.toLowerCase()) {
               // ignore: use_build_context_synchronously
               await fetchMasterAndDeleteTransaction();
-            }
+          //  }
             await DbSaleOrder().modifySevenDaysOrdersFromToday();
           }
         } else {

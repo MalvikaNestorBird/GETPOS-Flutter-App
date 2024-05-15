@@ -185,7 +185,9 @@ class _NewSelectCustomerState extends State<NewSelectCustomer> {
               boxDecoration: txtFieldBorderDecoration,
               txtCtrl: _phoneCtrl,
               hintText: "Phone No.",
-              txtColor: AppColors.getTextandCancelIcon()),
+              txtColor: AppColors.getTextandCancelIcon(),
+              keyboardType: TextInputType.phone,
+              ),
         ),
         hightSpacer20,
         Padding(
@@ -194,7 +196,8 @@ class _NewSelectCustomerState extends State<NewSelectCustomer> {
               boxDecoration: txtFieldBorderDecoration,
               txtCtrl: _nameCtrl,
               hintText: "Enter Name",
-              txtColor: AppColors.getTextandCancelIcon()),
+              txtColor: AppColors.getTextandCancelIcon(),
+              keyboardType: TextInputType.text,),
         ),
         hightSpacer20,
         Padding(
@@ -203,7 +206,8 @@ class _NewSelectCustomerState extends State<NewSelectCustomer> {
               boxDecoration: txtFieldBorderDecoration,
               txtCtrl: _emailCtrl,
               hintText: "Enter Email (optional)",
-              txtColor: AppColors.getTextandCancelIcon()),
+              txtColor: AppColors.getTextandCancelIcon(),
+              keyboardType: TextInputType.emailAddress,),
         ),
         hightSpacer30,
         SizedBox(

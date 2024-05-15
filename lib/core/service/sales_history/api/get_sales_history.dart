@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
+import 'package:nb_posx/database/db_utils/db_create_opening_shift.dart';
 import '../../../../../constants/app_constants.dart';
 import '../../../mobile/sales_history/ui/sales_history.dart';
 import '../model/sale_order_list_response.dart';
@@ -104,8 +105,15 @@ class GetSalesHistory {
                 .toString();
             log('Time : $time');
 
+            //fetch pos cashier id
+            var posProfileId = await DbCreateShift().getOpeningShiftData();
+
+//FETCH POS PROFILE
+var selectedPosProfile = await DBPreferences().getPreference(SELECTED_POS_PROFILE_ID);
             //Creating a SaleOrder
             SaleOrder saleOrder = SaleOrder(
+              name: selectedPosProfile,
+              posOpeningShift: posProfileId!.name,
               id: order.name!,
               date: date,
               time: time,

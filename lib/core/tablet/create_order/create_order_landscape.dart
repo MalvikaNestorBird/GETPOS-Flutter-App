@@ -6,10 +6,7 @@ import 'package:get/get.dart';
 import 'package:nb_posx/configs/theme_dynamic_colors.dart';
 import 'package:nb_posx/core/service/customer/api/customer_api_service.dart';
 import 'package:nb_posx/core/service/product/api/products_api_service.dart';
-import 'package:nb_posx/core/tablet/home_tablet.dart';
-import 'package:nb_posx/core/tablet/open_shift/open_shift_management_landscape.dart';
-import 'package:nb_posx/core/tablet/widget/left_side_menu.dart';
-import 'package:nb_posx/core/tablet/widget/left_side_menu_old.dart';
+import 'package:nb_posx/database/db_utils/db_product.dart';
 import 'package:nb_posx/database/models/park_order.dart';
 import 'package:nb_posx/database/models/shift_management.dart';
 import 'package:nb_posx/utils/helper.dart';
@@ -24,9 +21,7 @@ import '../../../../../utils/ui_utils/padding_margin.dart';
 import '../../../../../utils/ui_utils/spacer_widget.dart';
 import '../../../../../utils/ui_utils/text_styles/custom_text_style.dart';
 import '../../../database/models/order_item.dart';
-import '../../../network/api_helper/comman_response.dart';
 import '../../../widgets/item_options.dart';
-import '../../service/login/api/verify_instance_service.dart';
 import '../widget/create_customer_popup.dart';
 import '../widget/select_customer_popup.dart';
 import '../widget/title_search_bar.dart';
@@ -37,6 +32,7 @@ import 'cart_widget.dart';
 typedef OnCheckChangedCallback = void Function(bool isChecked);
 
 class CreateOrderLandscape extends StatefulWidget {
+ 
   ParkOrder? order;
   bool isShiftCreated;
   final RxString selectedView;
@@ -67,11 +63,12 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
   ShiftManagement? shiftManagement;
   List<Product> products = [];
   List<Category> categories = [];
+  List<Product> categoriesByItemName=[];
   // ParkOrder? parkOrder;
   late List<OrderItem> items;
   late ScrollController _scrollController;
   RxString selectedView = RxString("");
-
+  String? selectedPosProfile;
   @override
   void initState() {
     _scrollController = ScrollController();
@@ -119,7 +116,7 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
               TitleAndSearchBar(
                 title: "Choose Category",
                 searchCtrl: searchCtrl,
-                searchHint: "Search product / category",
+                searchHint: "Search for product/category",
                 searchBoxWidth: size.width / 4,
                 onTap: () {
                   final state = _key.currentState;
@@ -132,7 +129,10 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
                 },
                 onSubmit: (text) {
                   if (searchCtrl.text.length >= 3) {
-                    _filterProductsCategories(searchCtrl.text);
+                    _filterProductsCategories(text);
+                 //   _filterProductsCategoriesByName(searchCtrl.text);
+
+                   // setState(() {});
                   } else {
                     getProducts();
                   }
@@ -225,19 +225,20 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
         Padding(
           padding: leftSpace(x: 5),
           child: CartWidget(
+            posProfile: selectedPosProfile,
             // order: parkOrder!,
             itemsNotifier: itemsNotifier,
             customer: customer,
             orderList: items,
             taxes: const [],
             onHome: () {
-              widget.selectedView!.value = "Home";
+              widget.selectedView.value = "Home";
               items.clear();
               customer = null;
               setState(() {});
             },
             onPrintReceipt: () {
-              widget.selectedView!.value = "Home";
+              widget.selectedView.value = "Home";
               items.clear();
               customer = null;
               setState(() {});
@@ -534,6 +535,8 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
                                         //     : Image.memory(cat
                                         //         .items[position].productImage),
                                         )),
+
+                          
                                 Container(
                                     padding: const EdgeInsets.all(6),
                                     margin: const EdgeInsets.only(left: 45),
@@ -572,117 +575,182 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
     setState(() {});
   }
 
-  getCategoryListWidg() {
-    return SizedBox(
-      height: 110,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: categories.length,
-          itemBuilder: (context, position) {
-            return GestureDetector(
-              onTap: (() {
-                // log("TAPPED:::::");
-                final state = _key.currentState;
-                if (state != null && state.isOpen) {
-                  state.toggle();
-                }
-                _scrollToIndex(position);
-              }),
-              child: categories.isEmpty
-                  ? const Center(
-                      child: Text(
-                      "No items found",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
-                    ))
-                  : Container(
-                      margin: paddingXY(y: 5),
-                      width: 90,
-                      decoration: BoxDecoration(
-                        color: AppColors.fontWhiteColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              margin: const EdgeInsets.only(left: 5),
-                              height: 50,
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: (isInternetAvailable &&
-                                      (categories[position]
-                                          .items[0]
-                                          .productImageUrl!
-                                          .isNotEmpty))
-                                  //         !=
-                                  //     null ||
-                                  // categories[position]
-                                  //     .items[0]
-                                  //     .productImageUrl!
-                                  //     .isNotEmpty))
-                                  ? Image.network(
-                                      categories[position]
-                                          .items[0]
-                                          .productImageUrl!,
-                                      fit: BoxFit.fill,
-                                      // height: 50,
-                                      // width: 50,
-                                    )
-                                  : (isInternetAvailable &&
-                                          (categories[position]
-                                              .items[0]
-                                              .productImageUrl!
-                                              .isEmpty))
-                                      ? Image.asset(
-                                          NO_IMAGE,
-                                          fit: BoxFit.fill,
-                                        )
-                                      : Image.asset(
-                                          NO_IMAGE,
-                                          fit: BoxFit.fill,
-                                        ))
-                          // categories[position].image.isNotEmpty
-                          //     ? Image.memory(
-                          //         categories[position]
-                          //             .items
-                          //             .first
-                          //             .productImage,
-                          //         height: 50,
-                          //         width: 50,
-                          //         fit: BoxFit.fill,
-                          //       )
-                          //     : Image.asset(
-                          //         NO_IMAGE,
-                          //         fit: BoxFit.fill,
-                          //       ))
+  // getCategoryListWidg() {
+  //   return SizedBox(
+  //     height: 110,
+  //     child: ListView.builder(
+  //         scrollDirection: Axis.horizontal,
+  //         itemCount: categories.length,
+  //         itemBuilder: (context, position) {
+  //           return GestureDetector(
+  //             onTap: (() {
+  //               // log("TAPPED:::::");
+  //               final state = _key.currentState;
+  //               if (state != null && state.isOpen) {
+  //                 state.toggle();
+  //               }
+  //               _scrollToIndex(position);
+  //             }),
+  //             child: categories.isEmpty
+  //                 ? const Center(
+  //                     child: Text(
+  //                     "No items found",
+  //                     style: TextStyle(
+  //                         fontWeight: FontWeight.bold, color: Colors.black),
+  //                   ))
+  //                 : Container(
+  //                     margin: paddingXY(y: 5),
+  //                     width: 90,
+  //                     decoration: BoxDecoration(
+  //                       color: AppColors.fontWhiteColor,
+  //                       borderRadius: BorderRadius.circular(10),
+  //                     ),
+  //                     child: Column(
+  //                       mainAxisSize: MainAxisSize.max,
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: [
+  //                         Container(
+  //                             margin: const EdgeInsets.only(left: 5),
+  //                             height: 50,
+  //                             clipBehavior: Clip.antiAliasWithSaveLayer,
+  //                             decoration: const BoxDecoration(
+  //                               shape: BoxShape.circle,
+  //                             ),
+  //                             child: (isInternetAvailable &&
+  //                                     (categories[position]
+  //                                         .items[0]
+  //                                         .productImageUrl!
+  //                                         .isNotEmpty))
+  //                                 //         !=
+  //                                 //     null ||
+  //                                 // categories[position]
+  //                                 //     .items[0]
+  //                                 //     .productImageUrl!
+  //                                 //     .isNotEmpty))
+  //                                 ? Image.network(
+  //                                     categories[position]
+  //                                         .items[0]
+  //                                         .productImageUrl!,
+  //                                     fit: BoxFit.fill,
+  //                                     // height: 50,
+  //                                     // width: 50,
+  //                                   )
+  //                                 : (isInternetAvailable &&
+  //                                         (categories[position]
+  //                                             .items[0]
+  //                                             .productImageUrl!
+  //                                             .isEmpty))
+  //                                     ? Image.asset(
+  //                                         NO_IMAGE,
+  //                                         fit: BoxFit.fill,
+  //                                       )
+  //                                     : Image.asset(
+  //                                         NO_IMAGE,
+  //                                         fit: BoxFit.fill,
+  //                                       ))
+  //                         // categories[position].image.isNotEmpty
+  //                         //     ? Image.memory(
+  //                         //         categories[position]
+  //                         //             .items
+  //                         //             .first
+  //                         //             .productImage,
+  //                         //         height: 50,
+  //                         //         width: 50,
+  //                         //         fit: BoxFit.fill,
+  //                         //       )
+  //                         //     : Image.asset(
+  //                         //         NO_IMAGE,
+  //                         //         fit: BoxFit.fill,
+  //                         //       ))
 
-                          // Image.asset(
-                          //     BURGAR_IMAGE,
-                          //     height: 50,
-                          //     width: 50,
-                          //     fit: BoxFit.fill,
-                          //   ),
-                          ,
-                          Text(
-                            categories[position].name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: getTextStyle(
-                              fontSize: SMALL_PLUS_FONT_SIZE,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-            );
+  //                         // Image.asset(
+  //                         //     BURGAR_IMAGE,
+  //                         //     height: 50,
+  //                         //     width: 50,
+  //                         //     fit: BoxFit.fill,
+  //                         //   ),
+  //                         ,
+  //                         Text(
+  //                           categories[position].name,
+  //                           maxLines: 1,
+  //                           overflow: TextOverflow.ellipsis,
+  //                           style: getTextStyle(
+  //                             fontSize: SMALL_PLUS_FONT_SIZE,
+  //                             fontWeight: FontWeight.w500,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //           );
+  //         }),
+  //   );
+  // }
+
+  getCategoryListWidg() {
+  return SizedBox(
+    height: 110,
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: categories.length,
+      itemBuilder: (context, position) {
+        return GestureDetector(
+          onTap: (() {
+            final state = _key.currentState;
+            if (state != null && state.isOpen) {
+              state.toggle();
+            }
+            _scrollToIndex(position);
           }),
-    );
-  }
+          child: Container(
+            margin: paddingXY(y: 5),
+            width: 90,
+            decoration: BoxDecoration(
+              color: AppColors.fontWhiteColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 5),
+                  height: 50,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: (categories[position].items.isNotEmpty)
+                      ? Image.memory(
+                          categories[position].items[0].productImage!,
+                          fit: BoxFit.fill,
+                          errorBuilder:(context, error, stackTrace) {
+                            return Image.asset(NO_IMAGE);  
+                          }, 
+                        )
+                      : Image.asset(
+                          NO_IMAGE,
+                          fit: BoxFit.fill,
+                        ),
+                ),
+                Text(
+                  categories[position].name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: getTextStyle(
+                    fontSize: SMALL_PLUS_FONT_SIZE,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 
   Future<void> checkInternetAvailability() async {
     try {
@@ -692,6 +760,7 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
       });
     } catch (error) {
       // Handle the error if needed
+      // ignore: avoid_print
       print('Error: $error');
     }
   }
@@ -753,16 +822,69 @@ class _CreateOrderLandscapeState extends State<CreateOrderLandscape> {
         duration: const Duration(seconds: 1), curve: Curves.easeInOutSine);
   }
 
-  void _filterProductsCategories(String searchTxt) {
-    categories = categories
-        .where((element) =>
-            element.items.any((element) =>
-                element.name.toLowerCase().contains(searchTxt.toLowerCase())) ||
-            element.name.toLowerCase().contains(searchTxt.toLowerCase()))
-        .toList();
+  // void _filterProductsCategories(String searchTxt) {
+  //   categories = categories
+  //       .where((element) =>
+  //           element.items.any((element) =>
+  //               element.name.toLowerCase().contains(searchTxt.toLowerCase())) ||
+  //           element.name.toLowerCase().contains(searchTxt.toLowerCase()))
+  //       .toList();
+  //       log("categories:$categories");
+  //  // categoriesByItemName=categoriesByItemName.where((element) => element.name.toLowerCase().contains(searchTxt.toLowerCase())).toList();
 
-    setState(() {});
+  //   setState(() {});
+  // }
+
+
+//To Search by Product and Category
+void _filterProductsCategories(String searchTxt) {
+  List<Category> filteredCategories = [];
+  bool searchTextFound = false;
+
+  // Switch case 1: Check if search text matches category names
+  switch (1) {
+    case 1:
+      filteredCategories = categories
+          .where((category) =>
+              category.name.toLowerCase().contains(searchTxt.toLowerCase()))
+          .toList();
+
+      if (filteredCategories.isNotEmpty) {
+        searchTextFound = true;
+      }
+      break;
   }
+
+  // If search text not found in category names, switch to next case
+  if (!searchTextFound) {
+    // Switch case 2: Filter categories based on product names
+    switch (2) {
+      case 2:
+        for (var category in categories) {
+          List<Product> filteredItems = category.items
+              .where((item) =>
+                  item.name.toLowerCase().contains(searchTxt.toLowerCase()))
+              .toList();
+          if (filteredItems.isNotEmpty) {
+            Category filteredCategory = Category(
+                id: category.id,
+                name: category.name,
+                items: filteredItems,
+                image: category.image);
+            filteredCategories.add(filteredCategory);
+          }
+        }
+        break;
+    }
+  }
+
+  setState(() {
+    // Update categories with the filtered categories
+    categories = filteredCategories;
+  });
+}
+
+
 
 // Method to call the callback function when the shift status changes
   void _updateShiftStatus(bool isShiftCreated) {

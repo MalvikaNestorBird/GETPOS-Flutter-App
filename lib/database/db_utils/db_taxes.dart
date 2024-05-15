@@ -13,7 +13,7 @@ class DbTaxes {
     for (Taxes item in list) {
       await box.put(item.taxType, item);
     }
-    box.close();
+    //box.close();
   }
 
 
@@ -56,7 +56,7 @@ Future<List<Taxes>>? getItemWiseTax(String orderId) async {
       return List<Taxes>.empty();
     }
     var list = itemTaxesList.cast<Taxes>(); 
-     box.close();
+   //  box.close();
     return list;
     
   }

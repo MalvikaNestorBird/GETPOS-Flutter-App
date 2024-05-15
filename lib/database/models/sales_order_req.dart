@@ -11,30 +11,39 @@ part 'sales_order_req.g.dart';
 @HiveType(typeId: SalesOrderRequestId)
 class SalesOrderRequest extends HiveObject {
   @HiveField(0)
-  String? hubManager;
+  String? name;
 
   @HiveField(1)
-  String? customer;
+  String? posOpeningShift;
 
   @HiveField(2)
-  String? transactionDate;
+  String? customer;
 
   @HiveField(3)
-  String? deliveryDate;
+  String? transactionDate;
 
   @HiveField(4)
-  List<SaleOrderRequestItems>? items;
+  String? deliveryDate;
 
   @HiveField(5)
-  String? modeOfPayment;
+  List<SaleOrderRequestItems>? items;
 
   @HiveField(6)
-  String? mpesaNo;
+  String? modeOfPayment;
 
   @HiveField(7)
+  String? mpesaNo;
+
+  @HiveField(8)
   List<OrderTax>? tax;
 
+  @HiveField(9)
+  String? hubManager;
+ 
+
   SalesOrderRequest({
+    this.name,
+    required this.posOpeningShift,
     required this.hubManager,
     required this.customer,
     required this.transactionDate,
@@ -46,6 +55,8 @@ class SalesOrderRequest extends HiveObject {
   });
 
   SalesOrderRequest copyWith({
+    String? name,
+    String? posOpeningShift,
     String? hubManager,
     String? customer,
     String? transactionDate,
@@ -56,6 +67,8 @@ class SalesOrderRequest extends HiveObject {
     List<OrderTax>? tax,
   }) {
     return SalesOrderRequest(
+      name: name ?? this.name,
+      posOpeningShift: posOpeningShift ?? this.posOpeningShift,
       hubManager: hubManager ?? this.hubManager,
       customer: customer ?? this.customer,
       transactionDate: transactionDate ?? this.transactionDate,
@@ -69,6 +82,8 @@ class SalesOrderRequest extends HiveObject {
 
   Map<String, dynamic> toMap() {
     return {
+      'pos_profile': name ?? "",
+      'pos_opening_shift': posOpeningShift ?? "POSA-OS-24-0000416",
       'hub_manager': hubManager,
       'customer': customer,
       'transaction_date': transactionDate,
@@ -82,17 +97,17 @@ class SalesOrderRequest extends HiveObject {
 
   factory SalesOrderRequest.fromMap(Map<String, dynamic> map) {
     return SalesOrderRequest(
+      name: map['name'],
+      posOpeningShift: map['pos_opening_shift'],
       hubManager: map['hub_manager'],
       customer: map['customer'],
       transactionDate: map['transaction_date'],
       deliveryDate: map['delivery_date'],
-      items: List<SaleOrderRequestItems>.from(
-          map['selected_option']?.map((x) => SaleOrderRequestItems.fromMap(x))),
+      items: List<SaleOrderRequestItems>.from(map['selected_option']?.map((x) => SaleOrderRequestItems.fromMap(x))),
       modeOfPayment: map['mode_of_payment'],
       mpesaNo: map['mpesa_no'],
-      tax:List<OrderTax>.from(
-        map['tax']?.map((x) => OrderTax.fromMap(x)),
-    )
+      tax:List<OrderTax>.from(map['tax']?.map((x) => OrderTax.fromMap(x)),
+    ),
     );
   }
 
@@ -103,7 +118,7 @@ class SalesOrderRequest extends HiveObject {
 
   @override
   String toString() {
-    return 'SaleOrder( hub_manager: $hubManager, customer: $customer, transaction_date: $transactionDate items: $items, mode_of_payment: $modeOfPayment, mpesa_no: $mpesaNo ,tax: $tax)';
+    return 'SaleOrder( name:$name, pos_opening_shift: $posOpeningShift, hubManager: $hubManager, customer: $customer, transaction_date: $transactionDate items: $items, mode_of_payment: $modeOfPayment, mpesa_no: $mpesaNo ,tax: $tax)';
   }
 
   @override
@@ -111,6 +126,8 @@ class SalesOrderRequest extends HiveObject {
     if (identical(this, other)) return true;
 
     return other is SalesOrderRequest &&
+        other.name == name &&
+        other.posOpeningShift == posOpeningShift &&
         other.hubManager == hubManager &&
         other.customer == customer &&
         other.items == items &&
@@ -122,7 +139,10 @@ class SalesOrderRequest extends HiveObject {
 
   @override
   int get hashCode {
-    return hubManager.hashCode ^
+    return
+        name.hashCode ^
+        posOpeningShift.hashCode ^
+        hubManager.hashCode ^
         customer.hashCode ^
         items.hashCode ^
         modeOfPayment.hashCode ^

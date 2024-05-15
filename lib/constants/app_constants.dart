@@ -75,7 +75,7 @@ const PROCEED_TO_NXT_TXT = 'PROCCED TO NEXT';
 const CHECKOUT_TXT = 'CHECKOUT';
 const SELECT_CUSTOMER_ERROR = 'Please select the customer.';
 const SELECT_PRODUCT_ERROR = 'Please add the products in cart.';
-const SEARCH_PRODUCT_HINT_TXT = 'Search product / category';
+const SEARCH_PRODUCT_HINT_TXT = 'Searchcategory';
 
 //SELECT CUSTOMER SCREEN
 
@@ -179,6 +179,10 @@ const CHANGE_PASSWORD_INVALID_TEXT =
 const PASSWORD_UPDATED_TITLE = 'Password Updated!';
 const PASSWORD_UPDATED_MSG = 'Password Has Been Updated Successfully';
 const PASSWORD_UPDATED_BTN_TXT = 'Back To Home';
+
+//CLOSE SHIFT SCREEN
+const OPEN_THE_SHIFT = 'Please Open the Shift first';
+
 
 //SPLASH SCREEN
 const POWERED_BY_TXT = 'Powered by NestorBird';

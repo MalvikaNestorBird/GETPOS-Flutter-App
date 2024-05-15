@@ -6,6 +6,7 @@ Widget getHeightSpacer(height) => SizedBox(height: height.toDouble());
 
 Widget widthSpacer(width) => SizedBox(width: width.toDouble());
 Widget widthSpacer40 = widthSpacer(40);
+Widget widthSpacer10 = widthSpacer(10);
 Widget hightSpacer4 = getHeightSpacer(4);
 Widget hightSpacer5 = getHeightSpacer(5);
 Widget hightSpacer7 = getHeightSpacer(7);

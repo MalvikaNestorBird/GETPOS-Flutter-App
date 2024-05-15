@@ -2,24 +2,21 @@ import 'dart:developer';
 
 import 'package:hive/hive.dart';
 import 'package:nb_posx/database/db_utils/db_constants.dart';
-import 'package:nb_posx/database/models/payment_info.dart';
 import 'package:nb_posx/database/models/shift_management.dart';
 
-import '../models/payment_type.dart';
-import '../models/pos_profile_cashier.dart';
 
 class DbShiftManagement {
   late Box box;
 
-  Future<void> getShiftManagementData(ShiftManagement shiftManagement) async {
+  Future<void> saveShiftManagementData(ShiftManagement shiftManagement) async {
     // Open the Hive box
     var box = await Hive.openBox<ShiftManagement>(SHIFT_MANAGEMENT_BOX);
 
     // Save the shift management data
-    await box.put('shift', shiftManagement);
+    await box.put(SHIFT_ID,shiftManagement);
 
     // Close the Hive box
-    await box.close();
+   //await box.close();
   }
 
 Future<void> closeShiftManagement(ShiftManagement shiftManagement) async {
@@ -27,7 +24,7 @@ Future<void> closeShiftManagement(ShiftManagement shiftManagement) async {
     var box = await Hive.openBox<ShiftManagement>(SHIFT_MANAGEMENT_BOX);
 
     // Save the shift management data
-    await box.put('shift', shiftManagement);
+    await box.put(SHIFT_ID, shiftManagement);
 
     // Close the Hive box
     await box.close();
@@ -38,14 +35,12 @@ Future<int> deleteShift() async {
     return box.clear();
   }
 
-
-//fetch the data saved against pos profile for closing the shift
-// Database function
-// Future<Map<String, dynamic>> getShiftManagementData() async {
+// fetch the data saved against pos profile for closing the shift
+// Future<ShiftManagement> getShiftManagementData() async {
 //   var box = await Hive.openBox(SHIFT_MANAGEMENT_BOX);
 //   log('HIVE BOX: $box');
 
-//   var shiftData = box.get('shift');
+//   var shiftData = box.get(SHIFT_ID);
 //   log('SHIFT DATA TYPE: ${shiftData.runtimeType}');
 //   log('SHIFT DATA VALUE: $shiftData');
 
@@ -53,8 +48,8 @@ Future<int> deleteShift() async {
 
 //   if (shiftData is Map<dynamic, dynamic>) {
 //     // Extract shift management data
-//     if (shiftData.containsKey('shiftManagement')) {
-//       return Future.value(shiftData['shiftManagement']);
+//     if (shiftData.containsKey(SHIFT_ID)) {
+//       return Future.value(shiftData[SHIFT_ID]);
 //     } else {
 //       throw Exception('Shift management data not found');
 //     }
@@ -63,11 +58,14 @@ Future<int> deleteShift() async {
 //   }
 // }
 
-Future<ShiftManagement?> getShiftManagement() async {
+Future<ShiftManagement> getShiftManagement() async {
   var box = await Hive.openBox<ShiftManagement>(SHIFT_MANAGEMENT_BOX);
-  var shiftData = box.get('shift');
-  return shiftData;
+  var shiftData = box.get(SHIFT_ID);
+  return shiftData!;
 }
+
+
 }
+
 
 

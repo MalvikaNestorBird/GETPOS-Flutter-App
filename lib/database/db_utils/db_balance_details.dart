@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:hive/hive.dart';
 import 'package:nb_posx/database/models/balance_details.dart';
 
-import '../models/payment_type.dart';
 import 'db_constants.dart';
 ///
 ///DB FOR STORE THE POS PROFILE CASHIER LOCALLY

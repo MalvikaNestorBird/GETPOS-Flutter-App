@@ -9,9 +9,12 @@ import 'package:nb_posx/configs/theme_dynamic_colors.dart';
 import 'package:nb_posx/core/mobile/create_order_new/ui/widget/calculate_taxes.dart';
 import 'package:nb_posx/core/service/product/model/products_response.dart';
 import 'package:nb_posx/core/tablet/create_order/sale_successful_popup_widget.dart';
+import 'package:nb_posx/database/db_utils/db_constants.dart';
+import 'package:nb_posx/database/db_utils/db_create_opening_shift.dart';
 import 'package:nb_posx/database/db_utils/db_order_item.dart';
 // import 'package:nb_posx/database/db_utils/db_hub_manager.dart';
 import 'package:nb_posx/database/db_utils/db_order_tax_template.dart';
+import 'package:nb_posx/database/db_utils/db_preferences.dart';
 
 import 'package:nb_posx/database/db_utils/db_taxes.dart';
 import 'package:nb_posx/database/models/order_item.dart';
@@ -40,6 +43,7 @@ import '../widget/select_customer_popup.dart';
 
 // ignore: must_be_immutable
 class CartWidget extends StatefulWidget {
+  String? posProfile;
   final ValueNotifier<List<OrderItem>> itemsNotifier;
   ParkOrder? order;
   Customer? customer;
@@ -50,6 +54,7 @@ class CartWidget extends StatefulWidget {
       {Key? key,
       this.order,
       this.customer,
+      required this.posProfile,
       required this.itemsNotifier,
       required this.orderList,
       required this.onNewOrder,
@@ -64,6 +69,7 @@ class CartWidget extends StatefulWidget {
 
 class _CartWidgetState extends State<CartWidget> {
   final bool _isCODSelected = false;
+  String? selectedPosProfile;
   Customer? selectedCustomer;
   ParkOrder? currentCart;
   String? orderId;
@@ -85,7 +91,6 @@ class _CartWidgetState extends State<CartWidget> {
   List<OrderTaxTemplate> data = [];
   bool isItemWiseTax = true;
   Map<String, double> taxAmountMap = {};
-
   List<OrderTax> taxesData = [];
   @override
   void initState() {
@@ -829,9 +834,17 @@ class _CartWidgetState extends State<CartWidget> {
     var tax = await DbOrderTax().getOrderWiseTax(orderId);
     log("OrderWise Taxes :: $tax");
 
-//boolean to check itemwise or orderwise in sales order
+//fetch pos cashier id
+var posProfileId = await DbCreateShift().getOpeningShiftData();
+log("POS Profile Id: $posProfileId");
 
+//FETCH POS PROFILE ID
+var selectedPosProfile = await DBPreferences().getPreference(SELECTED_POS_PROFILE_ID);
+
+//boolean to check itemwise or orderwise in sales order
     SaleOrder saleOrder = SaleOrder(
+        name: selectedPosProfile!,
+        posOpeningShift: posProfileId!.name,
         id: orderId,
         orderAmount: grandTotal,
         date: date,
@@ -841,8 +854,8 @@ class _CartWidgetState extends State<CartWidget> {
         items: currentCart!.items,
         transactionId: '',
         paymentMethod: selectedCardMode
-            ? "Card"
-            : "Cash", //TODO:: Need to check when payment gateway is implemented
+            ? "Card"   //TO DO: Card is to be implemented yet
+            : "Cash", 
         paymentStatus: "Paid",
         transactionSynced: false,
         parkOrderId:

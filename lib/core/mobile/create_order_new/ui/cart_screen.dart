@@ -8,18 +8,13 @@ import 'package:intl/intl.dart';
 import 'package:nb_posx/configs/theme_dynamic_colors.dart';
 import 'package:nb_posx/core/mobile/home/ui/product_list_home.dart';
 import 'package:nb_posx/core/mobile/parked_orders/ui/orderlist_screen.dart';
-import 'package:nb_posx/core/service/create_order/api/promo_code_service.dart';
 import 'package:nb_posx/core/service/create_order/model/promo_codes_response.dart';
-// import 'package:nb_posx/database/db_utils/db_order_item.dart';
-//import 'package:nb_posx/core/service/orderwise_taxation/model/orderwise_tax_response.dart';
+import 'package:nb_posx/database/db_utils/db_create_opening_shift.dart';
 import 'package:nb_posx/database/db_utils/db_order_tax.dart';
 import 'package:nb_posx/database/db_utils/db_order_tax_template.dart';
-import 'package:nb_posx/database/db_utils/db_taxes.dart';
 import 'package:nb_posx/database/models/order_tax_template.dart';
 import 'package:nb_posx/database/models/orderwise_tax.dart';
 import 'package:nb_posx/database/models/taxes.dart';
-import 'package:nb_posx/network/api_helper/api_status.dart';
-import 'package:nb_posx/network/api_helper/comman_response.dart';
 import 'package:nb_posx/utils/ui_utils/spacer_widget.dart';
 import 'package:nb_posx/widgets/long_button_widget.dart';
 
@@ -56,7 +51,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   String? orderId;
-  bool _isCODSelected = false;
+  bool _isCODSelected = true;
   bool isPromoCodeAvailableForUse = false;
   double? totalAmount;
   double subTotalAmount = 0.0;
@@ -242,10 +237,10 @@ class _CartScreenState extends State<CartScreen> {
             child: Row(
               children: [
                 getPaymentOption(
-                    PAYMENT_CARD_ICON, CARD_PAYMENT_TXT, !_isCODSelected),
-                widthSpacer(15),
-                getPaymentOption(
                     PAYMENT_CASH_ICON, CASH_PAYMENT_TXT, _isCODSelected),
+                widthSpacer(15),
+                    getPaymentOption(
+                    PAYMENT_CARD_ICON, CARD_PAYMENT_TXT, !_isCODSelected),
               ],
             ),
           ),
@@ -616,52 +611,52 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _promoCodeSection() {
-    return Container(
-      // height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      width: double.infinity,
-      decoration: BoxDecoration(
-          color: AppColors.getPrimary().withOpacity(0.1),
-          border: Border.all(
-              width: 1, color: AppColors.getPrimary().withOpacity(0.5)),
-          borderRadius: BorderRadius.circular(12)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Promo Code",
-            style: getTextStyle(
-                fontWeight: FontWeight.w500,
-                color: AppColors.getPrimary(),
-                fontSize: MEDIUM_PLUS_FONT_SIZE),
-          ),
-          Column(
-            children: [
-              Text(
-                "",
-                style: getTextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.getPrimary(),
-                    fontSize: MEDIUM_PLUS_FONT_SIZE),
-              ),
-              const SizedBox(height: 2),
-              Row(
-                children: List.generate(
-                    15,
-                    (index) => Container(
-                          width: 2,
-                          height: 1,
-                          margin: const EdgeInsets.symmetric(horizontal: 1),
-                          color: AppColors.getPrimary(),
-                        )),
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _promoCodeSection() {
+  //   return Container(
+  //     // height: 60,
+  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  //     width: double.infinity,
+  //     decoration: BoxDecoration(
+  //         color: AppColors.getPrimary().withOpacity(0.1),
+  //         border: Border.all(
+  //             width: 1, color: AppColors.getPrimary().withOpacity(0.5)),
+  //         borderRadius: BorderRadius.circular(12)),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Text(
+  //           "Promo Code",
+  //           style: getTextStyle(
+  //               fontWeight: FontWeight.w500,
+  //               color: AppColors.getPrimary(),
+  //               fontSize: MEDIUM_PLUS_FONT_SIZE),
+  //         ),
+  //         Column(
+  //           children: [
+  //             Text(
+  //               "",
+  //               style: getTextStyle(
+  //                   fontWeight: FontWeight.w600,
+  //                   color: AppColors.getPrimary(),
+  //                   fontSize: MEDIUM_PLUS_FONT_SIZE),
+  //             ),
+  //             const SizedBox(height: 2),
+  //             Row(
+  //               children: List.generate(
+  //                   15,
+  //                   (index) => Container(
+  //                         width: 2,
+  //                         height: 1,
+  //                         margin: const EdgeInsets.symmetric(horizontal: 1),
+  //                         color: AppColors.getPrimary(),
+  //                       )),
+  //             )
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _subtotalSection(title, amount, {bool isDiscount = false}) => Padding(
         padding: const EdgeInsets.only(top: 6, left: 0, right: 0),
@@ -769,8 +764,19 @@ class _CartScreenState extends State<CartScreen> {
       var tax = await DbOrderTax().getOrderWiseTax(orderId!);
       log("OrderWise Taxes :: $tax");
       //await DbOrderItem().updateTaxAmounts(orderId!);
+      
+      //fetch pos cashier id
+      var posProfileId = await DbCreateShift().getOpeningShiftData();
 
+      String? selectedPosProfile;
+      //this is to be checked when mobile shift management will start.
+      
+      //sales order
       saleOrder = SaleOrder(
+          name: "Akshay",
+         //  selectedPosProfile!,
+          posOpeningShift:  "POSA-OS-24-0000416",
+          //posProfileId!.name,
           id: orderId!,
           orderAmount: grandTotal,
           date: date,
@@ -943,22 +949,21 @@ class _CartScreenState extends State<CartScreen> {
     }
     widget.order.orderAmount = orderAmount!;
     log('orderAmount after deleting:: $orderAmount');
-var parkOrders = await DbParkedOrder().getOrders();
 //await _configureTaxAndTotal(parkOrders!);
     _configureTaxAndTotal(widget.order.items);
     // calculateItemWiseTax(taxDetailsList,subTotalAmount);
   }
 
-  void _getAllPromoCodes() async {
-    CommanResponse commanResponse = await PromoCodeservice().getPromoCodes();
+  // void _getAllPromoCodes() async {
+  //   CommanResponse commanResponse = await PromoCodeservice().getPromoCodes();
 
-    if (commanResponse.apiStatus == ApiStatus.NO_INTERNET) {
-      isPromoCodeAvailableForUse = false;
-    } else if (commanResponse.apiStatus == ApiStatus.REQUEST_SUCCESS) {
-      PromoCodesResponse promoCodesResponse = commanResponse.message;
-      couponCodes = promoCodesResponse.message!.couponCode!;
-    } else {
-      isPromoCodeAvailableForUse = false;
-    }
-  }
+  //   if (commanResponse.apiStatus == ApiStatus.NO_INTERNET) {
+  //     isPromoCodeAvailableForUse = false;
+  //   } else if (commanResponse.apiStatus == ApiStatus.REQUEST_SUCCESS) {
+  //     PromoCodesResponse promoCodesResponse = commanResponse.message;
+  //     couponCodes = promoCodesResponse.message!.couponCode!;
+  //   } else {
+  //     isPromoCodeAvailableForUse = false;
+  //   }
+  // }
 }

@@ -370,13 +370,13 @@ Future<void> clearDataAndNavigate() async {
                       ..onTap = () {
                        
                           Navigator.push(
-                              ctx,
+                              context,
                               MaterialPageRoute(
                                   builder: (context) => WebViewScreen(
                                       topicTypes:
                                           TopicTypes.TERMS_AND_CONDITIONS,
                                       apiUrl:
-                                          "https://${_urlCtrl.text}/api/")));
+                                          "https://$url/api/")));
                        
                       },
                     text: TERMS_CONDITIONS,
@@ -395,12 +395,12 @@ Future<void> clearDataAndNavigate() async {
                       ..onTap = () {
                      {
                           Navigator.push(
-                              ctx,
+                              context,
                               MaterialPageRoute(
                                   builder: (context) => WebViewScreen(
                                       topicTypes: TopicTypes.PRIVACY_POLICY,
                                       apiUrl:
-                                          "https://${_urlCtrl.text}/api/")));
+                                          "https://$url/api/")));
                         } 
                       },
                     text: PRIVACY_POLICY,

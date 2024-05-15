@@ -15,7 +15,7 @@ class TextFieldWidget extends StatefulWidget {
     required this.boxDecoration,
     this.verticalContentPadding = 10,
     this.password = false,
-  
+    this.keyboardType, // Add keyboardType parameter
   }) : _txtCtrl = txtCtrl,
        _hintText = hintText,
        super(key: key);
@@ -26,7 +26,8 @@ class TextFieldWidget extends StatefulWidget {
   final Color txtColor;
   final BoxDecoration boxDecoration;
   final double verticalContentPadding;
-
+  final TextInputType? keyboardType; // Declare keyboardType
+  
   @override
   _TextFieldWidgetState createState() => _TextFieldWidgetState();
 }
@@ -44,14 +45,14 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           fontSize: LARGE_MINUS_FONT_SIZE,
           fontWeight: FontWeight.w600,
         ),
-        
         controller: widget._txtCtrl,
         cursorColor: AppColors.getAsset(),
         autocorrect: false,
         textInputAction: TextInputAction.next,
+        keyboardType: widget.keyboardType, // Set keyboardType
         obscureText: widget.password
-        ? _obscureText
-        : widget.password,
+            ? _obscureText
+            : widget.password,
         decoration: widget.password
             ? InputDecoration(
                 hintText: widget._hintText,

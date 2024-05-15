@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:hive/hive.dart';
 import 'package:nb_posx/database/db_utils/db_constants.dart';
 import '../models/pos_profile_cashier.dart';
@@ -39,6 +41,29 @@ class DbPosProfileCashier {
     list.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     return list;
   }
+
+///
+///FILTER THE POS CASHIER WITH THE COMPANY
+///
+Future<String?> getCompanyByProfileName(String selectedProfile) async {
+  box = await Hive.openBox<PosProfileCashier>(POS_PROFILE_CASHIER);
+  List<PosProfileCashier> posProfiles = [];
+
+  box.values.where((profile) => profile.name == selectedProfile).forEach((profile) {
+    log('Values:$profile');
+    posProfiles.add(profile);
+  });
+
+  log('LIST:$posProfiles');
+
+  if (posProfiles.isNotEmpty) {
+   //provided that a posprofile can have one company only
+    return posProfiles.first.company;
+  } else {
+    // Return null if no matching profile is found
+    return null;
+  }
+}
 
   ///
   ///DELETE ALL THE POS CASHIER IN THE DB

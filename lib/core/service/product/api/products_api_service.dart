@@ -103,7 +103,20 @@ class ProductsService {
                 PRODUCT_LAST_SYNC_DATETIME, Helper.getCurrentDateTime());
 
             //  var imageBytes = await Helper.getImageBytesFromUrl(item.image!);
-            var imageBytes = Uint8List.fromList([]);
+           // var imageBytes = Uint8List.fromList([]);
+
+            var imageBytes;
+
+            try {
+              // Attempt to fetch image bytes from URL
+              imageBytes = await Helper.getImageBytesFromUrl(item.image!);
+            } catch (e) {
+              // Handle connection errors or other exceptions
+              print('Error fetching image bytes: $e');
+              // Retry logic can be implemented here if desired
+              // For simplicity, we'll just set imageBytes to an empty list
+              imageBytes = Uint8List.fromList([]);
+            }
 
             Product product = Product(
                 id: item.id!,
@@ -155,7 +168,7 @@ class ProductsService {
           apiStatus: ApiStatus.NO_INTERNET);
     }
   }
-
+//NOT BEING USED
   Future<CommanResponse> getProducts() async {
     if (await Helper.isNetworkAvailable()) {
       //Fetching hub manager id/email from DbPreferences
